@@ -1,0 +1,1948 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메뚜기형 점프 로봇 시뮬레이터</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0F766E">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="메뚜기 점프">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<script>
+/*!
+ * matter-js 0.19.0 by @liabru
+ * http://brm.io/matter-js/
+ * License MIT
+ */
+!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define("Matter",[],t):"object"==typeof exports?exports.Matter=t():e.Matter=t()}(this,(function(){return function(e){var t={};function n(i){if(t[i])return t[i].exports;var o=t[i]={i:i,l:!1,exports:{}};return e[i].call(o.exports,o,o.exports,n),o.l=!0,o.exports}return n.m=e,n.c=t,n.d=function(e,t,i){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:i})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var i=Object.create(null);if(n.r(i),Object.defineProperty(i,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)n.d(i,o,function(t){return e[t]}.bind(null,o));return i},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="",n(n.s=20)}([function(e,t){var n={};e.exports=n,function(){n._baseDelta=1e3/60,n._nextId=0,n._seed=0,n._nowStartTime=+new Date,n._warnedOnce={},n._decomp=null,n.extend=function(e,t){var i,o;"boolean"==typeof t?(i=2,o=t):(i=1,o=!0);for(var r=i;r<arguments.length;r++){var a=arguments[r];if(a)for(var s in a)o&&a[s]&&a[s].constructor===Object?e[s]&&e[s].constructor!==Object?e[s]=a[s]:(e[s]=e[s]||{},n.extend(e[s],o,a[s])):e[s]=a[s]}return e},n.clone=function(e,t){return n.extend({},t,e)},n.keys=function(e){if(Object.keys)return Object.keys(e);var t=[];for(var n in e)t.push(n);return t},n.values=function(e){var t=[];if(Object.keys){for(var n=Object.keys(e),i=0;i<n.length;i++)t.push(e[n[i]]);return t}for(var o in e)t.push(e[o]);return t},n.get=function(e,t,n,i){t=t.split(".").slice(n,i);for(var o=0;o<t.length;o+=1)e=e[t[o]];return e},n.set=function(e,t,i,o,r){var a=t.split(".").slice(o,r);return n.get(e,t,0,-1)[a[a.length-1]]=i,i},n.shuffle=function(e){for(var t=e.length-1;t>0;t--){var i=Math.floor(n.random()*(t+1)),o=e[t];e[t]=e[i],e[i]=o}return e},n.choose=function(e){return e[Math.floor(n.random()*e.length)]},n.isElement=function(e){return"undefined"!=typeof HTMLElement?e instanceof HTMLElement:!!(e&&e.nodeType&&e.nodeName)},n.isArray=function(e){return"[object Array]"===Object.prototype.toString.call(e)},n.isFunction=function(e){return"function"==typeof e},n.isPlainObject=function(e){return"object"==typeof e&&e.constructor===Object},n.isString=function(e){return"[object String]"===toString.call(e)},n.clamp=function(e,t,n){return e<t?t:e>n?n:e},n.sign=function(e){return e<0?-1:1},n.now=function(){if("undefined"!=typeof window&&window.performance){if(window.performance.now)return window.performance.now();if(window.performance.webkitNow)return window.performance.webkitNow()}return Date.now?Date.now():new Date-n._nowStartTime},n.random=function(t,n){return n=void 0!==n?n:1,(t=void 0!==t?t:0)+e()*(n-t)};var e=function(){return n._seed=(9301*n._seed+49297)%233280,n._seed/233280};n.colorToNumber=function(e){return 3==(e=e.replace("#","")).length&&(e=e.charAt(0)+e.charAt(0)+e.charAt(1)+e.charAt(1)+e.charAt(2)+e.charAt(2)),parseInt(e,16)},n.logLevel=1,n.log=function(){console&&n.logLevel>0&&n.logLevel<=3&&console.log.apply(console,["matter-js:"].concat(Array.prototype.slice.call(arguments)))},n.info=function(){console&&n.logLevel>0&&n.logLevel<=2&&console.info.apply(console,["matter-js:"].concat(Array.prototype.slice.call(arguments)))},n.warn=function(){console&&n.logLevel>0&&n.logLevel<=3&&console.warn.apply(console,["matter-js:"].concat(Array.prototype.slice.call(arguments)))},n.warnOnce=function(){var e=Array.prototype.slice.call(arguments).join(" ");n._warnedOnce[e]||(n.warn(e),n._warnedOnce[e]=!0)},n.deprecated=function(e,t,i){e[t]=n.chain((function(){n.warnOnce("🔅 deprecated 🔅",i)}),e[t])},n.nextId=function(){return n._nextId++},n.indexOf=function(e,t){if(e.indexOf)return e.indexOf(t);for(var n=0;n<e.length;n++)if(e[n]===t)return n;return-1},n.map=function(e,t){if(e.map)return e.map(t);for(var n=[],i=0;i<e.length;i+=1)n.push(t(e[i]));return n},n.topologicalSort=function(e){var t=[],i=[],o=[];for(var r in e)i[r]||o[r]||n._topologicalSort(r,i,o,e,t);return t},n._topologicalSort=function(e,t,i,o,r){var a=o[e]||[];i[e]=!0;for(var s=0;s<a.length;s+=1){var l=a[s];i[l]||(t[l]||n._topologicalSort(l,t,i,o,r))}i[e]=!1,t[e]=!0,r.push(e)},n.chain=function(){for(var e=[],t=0;t<arguments.length;t+=1){var n=arguments[t];n._chained?e.push.apply(e,n._chained):e.push(n)}var i=function(){for(var t,n=new Array(arguments.length),i=0,o=arguments.length;i<o;i++)n[i]=arguments[i];for(i=0;i<e.length;i+=1){var r=e[i].apply(t,n);void 0!==r&&(t=r)}return t};return i._chained=e,i},n.chainPathBefore=function(e,t,i){return n.set(e,t,n.chain(i,n.get(e,t)))},n.chainPathAfter=function(e,t,i){return n.set(e,t,n.chain(n.get(e,t),i))},n.setDecomp=function(e){n._decomp=e},n.getDecomp=function(){var e=n._decomp;try{e||"undefined"==typeof window||(e=window.decomp),e||"undefined"==typeof global||(e=global.decomp)}catch(t){e=null}return e}}()},function(e,t){var n={};e.exports=n,n.create=function(e){var t={min:{x:0,y:0},max:{x:0,y:0}};return e&&n.update(t,e),t},n.update=function(e,t,n){e.min.x=1/0,e.max.x=-1/0,e.min.y=1/0,e.max.y=-1/0;for(var i=0;i<t.length;i++){var o=t[i];o.x>e.max.x&&(e.max.x=o.x),o.x<e.min.x&&(e.min.x=o.x),o.y>e.max.y&&(e.max.y=o.y),o.y<e.min.y&&(e.min.y=o.y)}n&&(n.x>0?e.max.x+=n.x:e.min.x+=n.x,n.y>0?e.max.y+=n.y:e.min.y+=n.y)},n.contains=function(e,t){return t.x>=e.min.x&&t.x<=e.max.x&&t.y>=e.min.y&&t.y<=e.max.y},n.overlaps=function(e,t){return e.min.x<=t.max.x&&e.max.x>=t.min.x&&e.max.y>=t.min.y&&e.min.y<=t.max.y},n.translate=function(e,t){e.min.x+=t.x,e.max.x+=t.x,e.min.y+=t.y,e.max.y+=t.y},n.shift=function(e,t){var n=e.max.x-e.min.x,i=e.max.y-e.min.y;e.min.x=t.x,e.max.x=t.x+n,e.min.y=t.y,e.max.y=t.y+i}},function(e,t){var n={};e.exports=n,n.create=function(e,t){return{x:e||0,y:t||0}},n.clone=function(e){return{x:e.x,y:e.y}},n.magnitude=function(e){return Math.sqrt(e.x*e.x+e.y*e.y)},n.magnitudeSquared=function(e){return e.x*e.x+e.y*e.y},n.rotate=function(e,t,n){var i=Math.cos(t),o=Math.sin(t);n||(n={});var r=e.x*i-e.y*o;return n.y=e.x*o+e.y*i,n.x=r,n},n.rotateAbout=function(e,t,n,i){var o=Math.cos(t),r=Math.sin(t);i||(i={});var a=n.x+((e.x-n.x)*o-(e.y-n.y)*r);return i.y=n.y+((e.x-n.x)*r+(e.y-n.y)*o),i.x=a,i},n.normalise=function(e){var t=n.magnitude(e);return 0===t?{x:0,y:0}:{x:e.x/t,y:e.y/t}},n.dot=function(e,t){return e.x*t.x+e.y*t.y},n.cross=function(e,t){return e.x*t.y-e.y*t.x},n.cross3=function(e,t,n){return(t.x-e.x)*(n.y-e.y)-(t.y-e.y)*(n.x-e.x)},n.add=function(e,t,n){return n||(n={}),n.x=e.x+t.x,n.y=e.y+t.y,n},n.sub=function(e,t,n){return n||(n={}),n.x=e.x-t.x,n.y=e.y-t.y,n},n.mult=function(e,t){return{x:e.x*t,y:e.y*t}},n.div=function(e,t){return{x:e.x/t,y:e.y/t}},n.perp=function(e,t){return{x:(t=!0===t?-1:1)*-e.y,y:t*e.x}},n.neg=function(e){return{x:-e.x,y:-e.y}},n.angle=function(e,t){return Math.atan2(t.y-e.y,t.x-e.x)},n._temp=[n.create(),n.create(),n.create(),n.create(),n.create(),n.create()]},function(e,t,n){var i={};e.exports=i;var o=n(2),r=n(0);i.create=function(e,t){for(var n=[],i=0;i<e.length;i++){var o=e[i],r={x:o.x,y:o.y,index:i,body:t,isInternal:!1};n.push(r)}return n},i.fromPath=function(e,t){var n=[];return e.replace(/L?\s*([-\d.e]+)[\s,]*([-\d.e]+)*/gi,(function(e,t,i){n.push({x:parseFloat(t),y:parseFloat(i)})})),i.create(n,t)},i.centre=function(e){for(var t,n,r,a=i.area(e,!0),s={x:0,y:0},l=0;l<e.length;l++)r=(l+1)%e.length,t=o.cross(e[l],e[r]),n=o.mult(o.add(e[l],e[r]),t),s=o.add(s,n);return o.div(s,6*a)},i.mean=function(e){for(var t={x:0,y:0},n=0;n<e.length;n++)t.x+=e[n].x,t.y+=e[n].y;return o.div(t,e.length)},i.area=function(e,t){for(var n=0,i=e.length-1,o=0;o<e.length;o++)n+=(e[i].x-e[o].x)*(e[i].y+e[o].y),i=o;return t?n/2:Math.abs(n)/2},i.inertia=function(e,t){for(var n,i,r=0,a=0,s=e,l=0;l<s.length;l++)i=(l+1)%s.length,r+=(n=Math.abs(o.cross(s[i],s[l])))*(o.dot(s[i],s[i])+o.dot(s[i],s[l])+o.dot(s[l],s[l])),a+=n;return t/6*(r/a)},i.translate=function(e,t,n){n=void 0!==n?n:1;var i,o=e.length,r=t.x*n,a=t.y*n;for(i=0;i<o;i++)e[i].x+=r,e[i].y+=a;return e},i.rotate=function(e,t,n){if(0!==t){var i,o,r,a,s=Math.cos(t),l=Math.sin(t),c=n.x,u=n.y,d=e.length;for(a=0;a<d;a++)o=(i=e[a]).x-c,r=i.y-u,i.x=c+(o*s-r*l),i.y=u+(o*l+r*s);return e}},i.contains=function(e,t){for(var n,i=t.x,o=t.y,r=e.length,a=e[r-1],s=0;s<r;s++){if(n=e[s],(i-a.x)*(n.y-a.y)+(o-a.y)*(a.x-n.x)>0)return!1;a=n}return!0},i.scale=function(e,t,n,r){if(1===t&&1===n)return e;var a,s;r=r||i.centre(e);for(var l=0;l<e.length;l++)a=e[l],s=o.sub(a,r),e[l].x=r.x+s.x*t,e[l].y=r.y+s.y*n;return e},i.chamfer=function(e,t,n,i,a){t="number"==typeof t?[t]:t||[8],n=void 0!==n?n:-1,i=i||2,a=a||14;for(var s=[],l=0;l<e.length;l++){var c=e[l-1>=0?l-1:e.length-1],u=e[l],d=e[(l+1)%e.length],p=t[l<t.length?l:t.length-1];if(0!==p){var f=o.normalise({x:u.y-c.y,y:c.x-u.x}),v=o.normalise({x:d.y-u.y,y:u.x-d.x}),y=Math.sqrt(2*Math.pow(p,2)),m=o.mult(r.clone(f),p),g=o.normalise(o.mult(o.add(f,v),.5)),x=o.sub(u,o.mult(g,y)),h=n;-1===n&&(h=1.75*Math.pow(p,.32)),(h=r.clamp(h,i,a))%2==1&&(h+=1);for(var b=Math.acos(o.dot(f,v))/h,S=0;S<h;S++)s.push(o.add(o.rotate(m,b*S),x))}else s.push(u)}return s},i.clockwiseSort=function(e){var t=i.mean(e);return e.sort((function(e,n){return o.angle(t,e)-o.angle(t,n)})),e},i.isConvex=function(e){var t,n,i,o,r=0,a=e.length;if(a<3)return null;for(t=0;t<a;t++)if(i=(t+2)%a,o=(e[n=(t+1)%a].x-e[t].x)*(e[i].y-e[n].y),(o-=(e[n].y-e[t].y)*(e[i].x-e[n].x))<0?r|=1:o>0&&(r|=2),3===r)return!1;return 0!==r||null},i.hull=function(e){var t,n,i=[],r=[];for((e=e.slice(0)).sort((function(e,t){var n=e.x-t.x;return 0!==n?n:e.y-t.y})),n=0;n<e.length;n+=1){for(t=e[n];r.length>=2&&o.cross3(r[r.length-2],r[r.length-1],t)<=0;)r.pop();r.push(t)}for(n=e.length-1;n>=0;n-=1){for(t=e[n];i.length>=2&&o.cross3(i[i.length-2],i[i.length-1],t)<=0;)i.pop();i.push(t)}return i.pop(),r.pop(),i.concat(r)}},function(e,t,n){var i={};e.exports=i;var o=n(3),r=n(2),a=n(7),s=n(0),l=n(1),c=n(11);!function(){i._timeCorrection=!0,i._inertiaScale=4,i._nextCollidingGroupId=1,i._nextNonCollidingGroupId=-1,i._nextCategory=1,i._baseDelta=1e3/60,i.create=function(t){var n={id:s.nextId(),type:"body",label:"Body",parts:[],plugin:{},angle:0,vertices:o.fromPath("L 0 0 L 40 0 L 40 40 L 0 40"),position:{x:0,y:0},force:{x:0,y:0},torque:0,positionImpulse:{x:0,y:0},constraintImpulse:{x:0,y:0,angle:0},totalContacts:0,speed:0,angularSpeed:0,velocity:{x:0,y:0},angularVelocity:0,isSensor:!1,isStatic:!1,isSleeping:!1,motion:0,sleepThreshold:60,density:.001,restitution:0,friction:.1,frictionStatic:.5,frictionAir:.01,collisionFilter:{category:1,mask:4294967295,group:0},slop:.05,timeScale:1,render:{visible:!0,opacity:1,strokeStyle:null,fillStyle:null,lineWidth:null,sprite:{xScale:1,yScale:1,xOffset:0,yOffset:0}},events:null,bounds:null,chamfer:null,circleRadius:0,positionPrev:null,anglePrev:0,parent:null,axes:null,area:0,mass:0,inertia:0,deltaTime:1e3/60,_original:null},i=s.extend(n,t);return e(i,t),i},i.nextGroup=function(e){return e?i._nextNonCollidingGroupId--:i._nextCollidingGroupId++},i.nextCategory=function(){return i._nextCategory=i._nextCategory<<1,i._nextCategory};var e=function(e,t){t=t||{},i.set(e,{bounds:e.bounds||l.create(e.vertices),positionPrev:e.positionPrev||r.clone(e.position),anglePrev:e.anglePrev||e.angle,vertices:e.vertices,parts:e.parts||[e],isStatic:e.isStatic,isSleeping:e.isSleeping,parent:e.parent||e}),o.rotate(e.vertices,e.angle,e.position),c.rotate(e.axes,e.angle),l.update(e.bounds,e.vertices,e.velocity),i.set(e,{axes:t.axes||e.axes,area:t.area||e.area,mass:t.mass||e.mass,inertia:t.inertia||e.inertia});var n=e.isStatic?"#14151f":s.choose(["#f19648","#f5d259","#f55a3c","#063e7b","#ececd1"]),a=e.isStatic?"#555":"#ccc",u=e.isStatic&&null===e.render.fillStyle?1:0;e.render.fillStyle=e.render.fillStyle||n,e.render.strokeStyle=e.render.strokeStyle||a,e.render.lineWidth=e.render.lineWidth||u,e.render.sprite.xOffset+=-(e.bounds.min.x-e.position.x)/(e.bounds.max.x-e.bounds.min.x),e.render.sprite.yOffset+=-(e.bounds.min.y-e.position.y)/(e.bounds.max.y-e.bounds.min.y)};i.set=function(e,t,n){var o;for(o in"string"==typeof t&&(o=t,(t={})[o]=n),t)if(Object.prototype.hasOwnProperty.call(t,o))switch(n=t[o],o){case"isStatic":i.setStatic(e,n);break;case"isSleeping":a.set(e,n);break;case"mass":i.setMass(e,n);break;case"density":i.setDensity(e,n);break;case"inertia":i.setInertia(e,n);break;case"vertices":i.setVertices(e,n);break;case"position":i.setPosition(e,n);break;case"angle":i.setAngle(e,n);break;case"velocity":i.setVelocity(e,n);break;case"angularVelocity":i.setAngularVelocity(e,n);break;case"speed":i.setSpeed(e,n);break;case"angularSpeed":i.setAngularSpeed(e,n);break;case"parts":i.setParts(e,n);break;case"centre":i.setCentre(e,n);break;default:e[o]=n}},i.setStatic=function(e,t){for(var n=0;n<e.parts.length;n++){var i=e.parts[n];i.isStatic=t,t?(i._original={restitution:i.restitution,friction:i.friction,mass:i.mass,inertia:i.inertia,density:i.density,inverseMass:i.inverseMass,inverseInertia:i.inverseInertia},i.restitution=0,i.friction=1,i.mass=i.inertia=i.density=1/0,i.inverseMass=i.inverseInertia=0,i.positionPrev.x=i.position.x,i.positionPrev.y=i.position.y,i.anglePrev=i.angle,i.angularVelocity=0,i.speed=0,i.angularSpeed=0,i.motion=0):i._original&&(i.restitution=i._original.restitution,i.friction=i._original.friction,i.mass=i._original.mass,i.inertia=i._original.inertia,i.density=i._original.density,i.inverseMass=i._original.inverseMass,i.inverseInertia=i._original.inverseInertia,i._original=null)}},i.setMass=function(e,t){var n=e.inertia/(e.mass/6);e.inertia=n*(t/6),e.inverseInertia=1/e.inertia,e.mass=t,e.inverseMass=1/e.mass,e.density=e.mass/e.area},i.setDensity=function(e,t){i.setMass(e,t*e.area),e.density=t},i.setInertia=function(e,t){e.inertia=t,e.inverseInertia=1/e.inertia},i.setVertices=function(e,t){t[0].body===e?e.vertices=t:e.vertices=o.create(t,e),e.axes=c.fromVertices(e.vertices),e.area=o.area(e.vertices),i.setMass(e,e.density*e.area);var n=o.centre(e.vertices);o.translate(e.vertices,n,-1),i.setInertia(e,i._inertiaScale*o.inertia(e.vertices,e.mass)),o.translate(e.vertices,e.position),l.update(e.bounds,e.vertices,e.velocity)},i.setParts=function(e,t,n){var r;for(t=t.slice(0),e.parts.length=0,e.parts.push(e),e.parent=e,r=0;r<t.length;r++){var a=t[r];a!==e&&(a.parent=e,e.parts.push(a))}if(1!==e.parts.length){if(n=void 0===n||n){var s=[];for(r=0;r<t.length;r++)s=s.concat(t[r].vertices);o.clockwiseSort(s);var l=o.hull(s),c=o.centre(l);i.setVertices(e,l),o.translate(e.vertices,c)}var u=i._totalProperties(e);e.area=u.area,e.parent=e,e.position.x=u.centre.x,e.position.y=u.centre.y,e.positionPrev.x=u.centre.x,e.positionPrev.y=u.centre.y,i.setMass(e,u.mass),i.setInertia(e,u.inertia),i.setPosition(e,u.centre)}},i.setCentre=function(e,t,n){n?(e.positionPrev.x+=t.x,e.positionPrev.y+=t.y,e.position.x+=t.x,e.position.y+=t.y):(e.positionPrev.x=t.x-(e.position.x-e.positionPrev.x),e.positionPrev.y=t.y-(e.position.y-e.positionPrev.y),e.position.x=t.x,e.position.y=t.y)},i.setPosition=function(e,t,n){var i=r.sub(t,e.position);n?(e.positionPrev.x=e.position.x,e.positionPrev.y=e.position.y,e.velocity.x=i.x,e.velocity.y=i.y,e.speed=r.magnitude(i)):(e.positionPrev.x+=i.x,e.positionPrev.y+=i.y);for(var a=0;a<e.parts.length;a++){var s=e.parts[a];s.position.x+=i.x,s.position.y+=i.y,o.translate(s.vertices,i),l.update(s.bounds,s.vertices,e.velocity)}},i.setAngle=function(e,t,n){var i=t-e.angle;n?(e.anglePrev=e.angle,e.angularVelocity=i,e.angularSpeed=Math.abs(i)):e.anglePrev+=i;for(var a=0;a<e.parts.length;a++){var s=e.parts[a];s.angle+=i,o.rotate(s.vertices,i,e.position),c.rotate(s.axes,i),l.update(s.bounds,s.vertices,e.velocity),a>0&&r.rotateAbout(s.position,i,e.position,s.position)}},i.setVelocity=function(e,t){var n=e.deltaTime/i._baseDelta;e.positionPrev.x=e.position.x-t.x*n,e.positionPrev.y=e.position.y-t.y*n,e.velocity.x=(e.position.x-e.positionPrev.x)/n,e.velocity.y=(e.position.y-e.positionPrev.y)/n,e.speed=r.magnitude(e.velocity)},i.getVelocity=function(e){var t=i._baseDelta/e.deltaTime;return{x:(e.position.x-e.positionPrev.x)*t,y:(e.position.y-e.positionPrev.y)*t}},i.getSpeed=function(e){return r.magnitude(i.getVelocity(e))},i.setSpeed=function(e,t){i.setVelocity(e,r.mult(r.normalise(i.getVelocity(e)),t))},i.setAngularVelocity=function(e,t){var n=e.deltaTime/i._baseDelta;e.anglePrev=e.angle-t*n,e.angularVelocity=(e.angle-e.anglePrev)/n,e.angularSpeed=Math.abs(e.angularVelocity)},i.getAngularVelocity=function(e){return(e.angle-e.anglePrev)*i._baseDelta/e.deltaTime},i.getAngularSpeed=function(e){return Math.abs(i.getAngularVelocity(e))},i.setAngularSpeed=function(e,t){i.setAngularVelocity(e,s.sign(i.getAngularVelocity(e))*t)},i.translate=function(e,t,n){i.setPosition(e,r.add(e.position,t),n)},i.rotate=function(e,t,n,o){if(n){var r=Math.cos(t),a=Math.sin(t),s=e.position.x-n.x,l=e.position.y-n.y;i.setPosition(e,{x:n.x+(s*r-l*a),y:n.y+(s*a+l*r)},o),i.setAngle(e,e.angle+t,o)}else i.setAngle(e,e.angle+t,o)},i.scale=function(e,t,n,r){var a=0,s=0;r=r||e.position;for(var u=0;u<e.parts.length;u++){var d=e.parts[u];o.scale(d.vertices,t,n,r),d.axes=c.fromVertices(d.vertices),d.area=o.area(d.vertices),i.setMass(d,e.density*d.area),o.translate(d.vertices,{x:-d.position.x,y:-d.position.y}),i.setInertia(d,i._inertiaScale*o.inertia(d.vertices,d.mass)),o.translate(d.vertices,{x:d.position.x,y:d.position.y}),u>0&&(a+=d.area,s+=d.inertia),d.position.x=r.x+(d.position.x-r.x)*t,d.position.y=r.y+(d.position.y-r.y)*n,l.update(d.bounds,d.vertices,e.velocity)}e.parts.length>1&&(e.area=a,e.isStatic||(i.setMass(e,e.density*a),i.setInertia(e,s))),e.circleRadius&&(t===n?e.circleRadius*=t:e.circleRadius=null)},i.update=function(e,t){var n=(t=(void 0!==t?t:1e3/60)*e.timeScale)*t,a=i._timeCorrection?t/(e.deltaTime||t):1,u=1-e.frictionAir*(t/s._baseDelta),d=(e.position.x-e.positionPrev.x)*a,p=(e.position.y-e.positionPrev.y)*a;e.velocity.x=d*u+e.force.x/e.mass*n,e.velocity.y=p*u+e.force.y/e.mass*n,e.positionPrev.x=e.position.x,e.positionPrev.y=e.position.y,e.position.x+=e.velocity.x,e.position.y+=e.velocity.y,e.deltaTime=t,e.angularVelocity=(e.angle-e.anglePrev)*u*a+e.torque/e.inertia*n,e.anglePrev=e.angle,e.angle+=e.angularVelocity;for(var f=0;f<e.parts.length;f++){var v=e.parts[f];o.translate(v.vertices,e.velocity),f>0&&(v.position.x+=e.velocity.x,v.position.y+=e.velocity.y),0!==e.angularVelocity&&(o.rotate(v.vertices,e.angularVelocity,e.position),c.rotate(v.axes,e.angularVelocity),f>0&&r.rotateAbout(v.position,e.angularVelocity,e.position,v.position)),l.update(v.bounds,v.vertices,e.velocity)}},i.updateVelocities=function(e){var t=i._baseDelta/e.deltaTime,n=e.velocity;n.x=(e.position.x-e.positionPrev.x)*t,n.y=(e.position.y-e.positionPrev.y)*t,e.speed=Math.sqrt(n.x*n.x+n.y*n.y),e.angularVelocity=(e.angle-e.anglePrev)*t,e.angularSpeed=Math.abs(e.angularVelocity)},i.applyForce=function(e,t,n){var i=t.x-e.position.x,o=t.y-e.position.y;e.force.x+=n.x,e.force.y+=n.y,e.torque+=i*n.y-o*n.x},i._totalProperties=function(e){for(var t={mass:0,area:0,inertia:0,centre:{x:0,y:0}},n=1===e.parts.length?0:1;n<e.parts.length;n++){var i=e.parts[n],o=i.mass!==1/0?i.mass:1;t.mass+=o,t.area+=i.area,t.inertia+=i.inertia,t.centre=r.add(t.centre,r.mult(i.position,o))}return t.centre=r.div(t.centre,t.mass),t}}()},function(e,t,n){var i={};e.exports=i;var o=n(0);i.on=function(e,t,n){for(var i,o=t.split(" "),r=0;r<o.length;r++)i=o[r],e.events=e.events||{},e.events[i]=e.events[i]||[],e.events[i].push(n);return n},i.off=function(e,t,n){if(t){"function"==typeof t&&(n=t,t=o.keys(e.events).join(" "));for(var i=t.split(" "),r=0;r<i.length;r++){var a=e.events[i[r]],s=[];if(n&&a)for(var l=0;l<a.length;l++)a[l]!==n&&s.push(a[l]);e.events[i[r]]=s}}else e.events={}},i.trigger=function(e,t,n){var i,r,a,s,l=e.events;if(l&&o.keys(l).length>0){n||(n={}),i=t.split(" ");for(var c=0;c<i.length;c++)if(a=l[r=i[c]]){(s=o.clone(n,!1)).name=r,s.source=e;for(var u=0;u<a.length;u++)a[u].apply(e,[s])}}}},function(e,t,n){var i={};e.exports=i;var o=n(5),r=n(0),a=n(1),s=n(4);i.create=function(e){return r.extend({id:r.nextId(),type:"composite",parent:null,isModified:!1,bodies:[],constraints:[],composites:[],label:"Composite",plugin:{},cache:{allBodies:null,allConstraints:null,allComposites:null}},e)},i.setModified=function(e,t,n,o){if(e.isModified=t,t&&e.cache&&(e.cache.allBodies=null,e.cache.allConstraints=null,e.cache.allComposites=null),n&&e.parent&&i.setModified(e.parent,t,n,o),o)for(var r=0;r<e.composites.length;r++){var a=e.composites[r];i.setModified(a,t,n,o)}},i.add=function(e,t){var n=[].concat(t);o.trigger(e,"beforeAdd",{object:t});for(var a=0;a<n.length;a++){var s=n[a];switch(s.type){case"body":if(s.parent!==s){r.warn("Composite.add: skipped adding a compound body part (you must add its parent instead)");break}i.addBody(e,s);break;case"constraint":i.addConstraint(e,s);break;case"composite":i.addComposite(e,s);break;case"mouseConstraint":i.addConstraint(e,s.constraint)}}return o.trigger(e,"afterAdd",{object:t}),e},i.remove=function(e,t,n){var r=[].concat(t);o.trigger(e,"beforeRemove",{object:t});for(var a=0;a<r.length;a++){var s=r[a];switch(s.type){case"body":i.removeBody(e,s,n);break;case"constraint":i.removeConstraint(e,s,n);break;case"composite":i.removeComposite(e,s,n);break;case"mouseConstraint":i.removeConstraint(e,s.constraint)}}return o.trigger(e,"afterRemove",{object:t}),e},i.addComposite=function(e,t){return e.composites.push(t),t.parent=e,i.setModified(e,!0,!0,!1),e},i.removeComposite=function(e,t,n){var o=r.indexOf(e.composites,t);if(-1!==o&&i.removeCompositeAt(e,o),n)for(var a=0;a<e.composites.length;a++)i.removeComposite(e.composites[a],t,!0);return e},i.removeCompositeAt=function(e,t){return e.composites.splice(t,1),i.setModified(e,!0,!0,!1),e},i.addBody=function(e,t){return e.bodies.push(t),i.setModified(e,!0,!0,!1),e},i.removeBody=function(e,t,n){var o=r.indexOf(e.bodies,t);if(-1!==o&&i.removeBodyAt(e,o),n)for(var a=0;a<e.composites.length;a++)i.removeBody(e.composites[a],t,!0);return e},i.removeBodyAt=function(e,t){return e.bodies.splice(t,1),i.setModified(e,!0,!0,!1),e},i.addConstraint=function(e,t){return e.constraints.push(t),i.setModified(e,!0,!0,!1),e},i.removeConstraint=function(e,t,n){var o=r.indexOf(e.constraints,t);if(-1!==o&&i.removeConstraintAt(e,o),n)for(var a=0;a<e.composites.length;a++)i.removeConstraint(e.composites[a],t,!0);return e},i.removeConstraintAt=function(e,t){return e.constraints.splice(t,1),i.setModified(e,!0,!0,!1),e},i.clear=function(e,t,n){if(n)for(var o=0;o<e.composites.length;o++)i.clear(e.composites[o],t,!0);return t?e.bodies=e.bodies.filter((function(e){return e.isStatic})):e.bodies.length=0,e.constraints.length=0,e.composites.length=0,i.setModified(e,!0,!0,!1),e},i.allBodies=function(e){if(e.cache&&e.cache.allBodies)return e.cache.allBodies;for(var t=[].concat(e.bodies),n=0;n<e.composites.length;n++)t=t.concat(i.allBodies(e.composites[n]));return e.cache&&(e.cache.allBodies=t),t},i.allConstraints=function(e){if(e.cache&&e.cache.allConstraints)return e.cache.allConstraints;for(var t=[].concat(e.constraints),n=0;n<e.composites.length;n++)t=t.concat(i.allConstraints(e.composites[n]));return e.cache&&(e.cache.allConstraints=t),t},i.allComposites=function(e){if(e.cache&&e.cache.allComposites)return e.cache.allComposites;for(var t=[].concat(e.composites),n=0;n<e.composites.length;n++)t=t.concat(i.allComposites(e.composites[n]));return e.cache&&(e.cache.allComposites=t),t},i.get=function(e,t,n){var o,r;switch(n){case"body":o=i.allBodies(e);break;case"constraint":o=i.allConstraints(e);break;case"composite":o=i.allComposites(e).concat(e)}return o?0===(r=o.filter((function(e){return e.id.toString()===t.toString()}))).length?null:r[0]:null},i.move=function(e,t,n){return i.remove(e,t),i.add(n,t),e},i.rebase=function(e){for(var t=i.allBodies(e).concat(i.allConstraints(e)).concat(i.allComposites(e)),n=0;n<t.length;n++)t[n].id=r.nextId();return e},i.translate=function(e,t,n){for(var o=n?i.allBodies(e):e.bodies,r=0;r<o.length;r++)s.translate(o[r],t);return e},i.rotate=function(e,t,n,o){for(var r=Math.cos(t),a=Math.sin(t),l=o?i.allBodies(e):e.bodies,c=0;c<l.length;c++){var u=l[c],d=u.position.x-n.x,p=u.position.y-n.y;s.setPosition(u,{x:n.x+(d*r-p*a),y:n.y+(d*a+p*r)}),s.rotate(u,t)}return e},i.scale=function(e,t,n,o,r){for(var a=r?i.allBodies(e):e.bodies,l=0;l<a.length;l++){var c=a[l],u=c.position.x-o.x,d=c.position.y-o.y;s.setPosition(c,{x:o.x+u*t,y:o.y+d*n}),s.scale(c,t,n)}return e},i.bounds=function(e){for(var t=i.allBodies(e),n=[],o=0;o<t.length;o+=1){var r=t[o];n.push(r.bounds.min,r.bounds.max)}return a.create(n)}},function(e,t,n){var i={};e.exports=i;var o=n(4),r=n(5),a=n(0);i._motionWakeThreshold=.18,i._motionSleepThreshold=.08,i._minBias=.9,i.update=function(e,t){for(var n=t/a._baseDelta,r=i._motionSleepThreshold,s=0;s<e.length;s++){var l=e[s],c=o.getSpeed(l),u=o.getAngularSpeed(l),d=c*c+u*u;if(0===l.force.x&&0===l.force.y){var p=Math.min(l.motion,d),f=Math.max(l.motion,d);l.motion=i._minBias*p+(1-i._minBias)*f,l.sleepThreshold>0&&l.motion<r?(l.sleepCounter+=1,l.sleepCounter>=l.sleepThreshold/n&&i.set(l,!0)):l.sleepCounter>0&&(l.sleepCounter-=1)}else i.set(l,!1)}},i.afterCollisions=function(e){for(var t=i._motionSleepThreshold,n=0;n<e.length;n++){var o=e[n];if(o.isActive){var r=o.collision,a=r.bodyA.parent,s=r.bodyB.parent;if(!(a.isSleeping&&s.isSleeping||a.isStatic||s.isStatic)&&(a.isSleeping||s.isSleeping)){var l=a.isSleeping&&!a.isStatic?a:s,c=l===a?s:a;!l.isStatic&&c.motion>t&&i.set(l,!1)}}}},i.set=function(e,t){var n=e.isSleeping;t?(e.isSleeping=!0,e.sleepCounter=e.sleepThreshold,e.positionImpulse.x=0,e.positionImpulse.y=0,e.positionPrev.x=e.position.x,e.positionPrev.y=e.position.y,e.anglePrev=e.angle,e.speed=0,e.angularSpeed=0,e.motion=0,n||r.trigger(e,"sleepStart")):(e.isSleeping=!1,e.sleepCounter=0,n&&r.trigger(e,"sleepEnd"))}},function(e,t,n){var i={};e.exports=i;var o,r,a,s=n(3),l=n(9);o=[],r={overlap:0,axis:null},a={overlap:0,axis:null},i.create=function(e,t){return{pair:null,collided:!1,bodyA:e,bodyB:t,parentA:e.parent,parentB:t.parent,depth:0,normal:{x:0,y:0},tangent:{x:0,y:0},penetration:{x:0,y:0},supports:[]}},i.collides=function(e,t,n){if(i._overlapAxes(r,e.vertices,t.vertices,e.axes),r.overlap<=0)return null;if(i._overlapAxes(a,t.vertices,e.vertices,t.axes),a.overlap<=0)return null;var o,c,u=n&&n.table[l.id(e,t)];u?o=u.collision:((o=i.create(e,t)).collided=!0,o.bodyA=e.id<t.id?e:t,o.bodyB=e.id<t.id?t:e,o.parentA=o.bodyA.parent,o.parentB=o.bodyB.parent),e=o.bodyA,t=o.bodyB,c=r.overlap<a.overlap?r:a;var d=o.normal,p=o.supports,f=c.axis,v=f.x,y=f.y;v*(t.position.x-e.position.x)+y*(t.position.y-e.position.y)<0?(d.x=v,d.y=y):(d.x=-v,d.y=-y),o.tangent.x=-d.y,o.tangent.y=d.x,o.depth=c.overlap,o.penetration.x=d.x*o.depth,o.penetration.y=d.y*o.depth;var m=i._findSupports(e,t,d,1),g=0;if(s.contains(e.vertices,m[0])&&(p[g++]=m[0]),s.contains(e.vertices,m[1])&&(p[g++]=m[1]),g<2){var x=i._findSupports(t,e,d,-1);s.contains(t.vertices,x[0])&&(p[g++]=x[0]),g<2&&s.contains(t.vertices,x[1])&&(p[g++]=x[1])}return 0===g&&(p[g++]=m[0]),p.length=g,o},i._overlapAxes=function(e,t,n,i){var o,r,a,s,l,c,u=t.length,d=n.length,p=t[0].x,f=t[0].y,v=n[0].x,y=n[0].y,m=i.length,g=Number.MAX_VALUE,x=0;for(l=0;l<m;l++){var h=i[l],b=h.x,S=h.y,w=p*b+f*S,A=v*b+y*S,P=w,C=A;for(c=1;c<u;c+=1)(s=t[c].x*b+t[c].y*S)>P?P=s:s<w&&(w=s);for(c=1;c<d;c+=1)(s=n[c].x*b+n[c].y*S)>C?C=s:s<A&&(A=s);if((o=(r=P-A)<(a=C-w)?r:a)<g&&(g=o,x=l,o<=0))break}e.axis=i[x],e.overlap=g},i._projectToAxis=function(e,t,n){for(var i=t[0].x*n.x+t[0].y*n.y,o=i,r=1;r<t.length;r+=1){var a=t[r].x*n.x+t[r].y*n.y;a>o?o=a:a<i&&(i=a)}e.min=i,e.max=o},i._findSupports=function(e,t,n,i){var r,a,s,l,c,u=t.vertices,d=u.length,p=e.position.x,f=e.position.y,v=n.x*i,y=n.y*i,m=Number.MAX_VALUE;for(c=0;c<d;c+=1)(l=v*(p-(a=u[c]).x)+y*(f-a.y))<m&&(m=l,r=a);return m=v*(p-(s=u[(d+r.index-1)%d]).x)+y*(f-s.y),v*(p-(a=u[(r.index+1)%d]).x)+y*(f-a.y)<m?(o[0]=r,o[1]=a,o):(o[0]=r,o[1]=s,o)}},function(e,t,n){var i={};e.exports=i;var o=n(16);i.create=function(e,t){var n=e.bodyA,o=e.bodyB,r={id:i.id(n,o),bodyA:n,bodyB:o,collision:e,contacts:[],activeContacts:[],separation:0,isActive:!0,confirmedActive:!0,isSensor:n.isSensor||o.isSensor,timeCreated:t,timeUpdated:t,inverseMass:0,friction:0,frictionStatic:0,restitution:0,slop:0};return i.update(r,e,t),r},i.update=function(e,t,n){var i=e.contacts,r=t.supports,a=e.activeContacts,s=t.parentA,l=t.parentB,c=s.vertices.length;e.isActive=!0,e.timeUpdated=n,e.collision=t,e.separation=t.depth,e.inverseMass=s.inverseMass+l.inverseMass,e.friction=s.friction<l.friction?s.friction:l.friction,e.frictionStatic=s.frictionStatic>l.frictionStatic?s.frictionStatic:l.frictionStatic,e.restitution=s.restitution>l.restitution?s.restitution:l.restitution,e.slop=s.slop>l.slop?s.slop:l.slop,t.pair=e,a.length=0;for(var u=0;u<r.length;u++){var d=r[u],p=d.body===s?d.index:c+d.index,f=i[p];f?a.push(f):a.push(i[p]=o.create(d))}},i.setActive=function(e,t,n){t?(e.isActive=!0,e.timeUpdated=n):(e.isActive=!1,e.activeContacts.length=0)},i.id=function(e,t){return e.id<t.id?"A"+e.id+"B"+t.id:"A"+t.id+"B"+e.id}},function(e,t,n){var i={};e.exports=i;var o=n(3),r=n(2),a=n(7),s=n(1),l=n(11),c=n(0);i._warming=.4,i._torqueDampen=1,i._minLength=1e-6,i.create=function(e){var t=e;t.bodyA&&!t.pointA&&(t.pointA={x:0,y:0}),t.bodyB&&!t.pointB&&(t.pointB={x:0,y:0});var n=t.bodyA?r.add(t.bodyA.position,t.pointA):t.pointA,i=t.bodyB?r.add(t.bodyB.position,t.pointB):t.pointB,o=r.magnitude(r.sub(n,i));t.length=void 0!==t.length?t.length:o,t.id=t.id||c.nextId(),t.label=t.label||"Constraint",t.type="constraint",t.stiffness=t.stiffness||(t.length>0?1:.7),t.damping=t.damping||0,t.angularStiffness=t.angularStiffness||0,t.angleA=t.bodyA?t.bodyA.angle:t.angleA,t.angleB=t.bodyB?t.bodyB.angle:t.angleB,t.plugin={};var a={visible:!0,lineWidth:2,strokeStyle:"#ffffff",type:"line",anchors:!0};return 0===t.length&&t.stiffness>.1?(a.type="pin",a.anchors=!1):t.stiffness<.9&&(a.type="spring"),t.render=c.extend(a,t.render),t},i.preSolveAll=function(e){for(var t=0;t<e.length;t+=1){var n=e[t],i=n.constraintImpulse;n.isStatic||0===i.x&&0===i.y&&0===i.angle||(n.position.x+=i.x,n.position.y+=i.y,n.angle+=i.angle)}},i.solveAll=function(e,t){for(var n=c.clamp(t/c._baseDelta,0,1),o=0;o<e.length;o+=1){var r=e[o],a=!r.bodyA||r.bodyA&&r.bodyA.isStatic,s=!r.bodyB||r.bodyB&&r.bodyB.isStatic;(a||s)&&i.solve(e[o],n)}for(o=0;o<e.length;o+=1)a=!(r=e[o]).bodyA||r.bodyA&&r.bodyA.isStatic,s=!r.bodyB||r.bodyB&&r.bodyB.isStatic,a||s||i.solve(e[o],n)},i.solve=function(e,t){var n=e.bodyA,o=e.bodyB,a=e.pointA,s=e.pointB;if(n||o){n&&!n.isStatic&&(r.rotate(a,n.angle-e.angleA,a),e.angleA=n.angle),o&&!o.isStatic&&(r.rotate(s,o.angle-e.angleB,s),e.angleB=o.angle);var l=a,c=s;if(n&&(l=r.add(n.position,a)),o&&(c=r.add(o.position,s)),l&&c){var u=r.sub(l,c),d=r.magnitude(u);d<i._minLength&&(d=i._minLength);var p,f,v,y,m,g=(d-e.length)/d,x=e.stiffness>=1||0===e.length?e.stiffness*t:e.stiffness*t*t,h=e.damping*t,b=r.mult(u,g*x),S=(n?n.inverseMass:0)+(o?o.inverseMass:0),w=S+((n?n.inverseInertia:0)+(o?o.inverseInertia:0));if(h>0){var A=r.create();v=r.div(u,d),m=r.sub(o&&r.sub(o.position,o.positionPrev)||A,n&&r.sub(n.position,n.positionPrev)||A),y=r.dot(v,m)}n&&!n.isStatic&&(f=n.inverseMass/S,n.constraintImpulse.x-=b.x*f,n.constraintImpulse.y-=b.y*f,n.position.x-=b.x*f,n.position.y-=b.y*f,h>0&&(n.positionPrev.x-=h*v.x*y*f,n.positionPrev.y-=h*v.y*y*f),p=r.cross(a,b)/w*i._torqueDampen*n.inverseInertia*(1-e.angularStiffness),n.constraintImpulse.angle-=p,n.angle-=p),o&&!o.isStatic&&(f=o.inverseMass/S,o.constraintImpulse.x+=b.x*f,o.constraintImpulse.y+=b.y*f,o.position.x+=b.x*f,o.position.y+=b.y*f,h>0&&(o.positionPrev.x+=h*v.x*y*f,o.positionPrev.y+=h*v.y*y*f),p=r.cross(s,b)/w*i._torqueDampen*o.inverseInertia*(1-e.angularStiffness),o.constraintImpulse.angle+=p,o.angle+=p)}}},i.postSolveAll=function(e){for(var t=0;t<e.length;t++){var n=e[t],c=n.constraintImpulse;if(!(n.isStatic||0===c.x&&0===c.y&&0===c.angle)){a.set(n,!1);for(var u=0;u<n.parts.length;u++){var d=n.parts[u];o.translate(d.vertices,c),u>0&&(d.position.x+=c.x,d.position.y+=c.y),0!==c.angle&&(o.rotate(d.vertices,c.angle,n.position),l.rotate(d.axes,c.angle),u>0&&r.rotateAbout(d.position,c.angle,n.position,d.position)),s.update(d.bounds,d.vertices,n.velocity)}c.angle*=i._warming,c.x*=i._warming,c.y*=i._warming}}},i.pointAWorld=function(e){return{x:(e.bodyA?e.bodyA.position.x:0)+(e.pointA?e.pointA.x:0),y:(e.bodyA?e.bodyA.position.y:0)+(e.pointA?e.pointA.y:0)}},i.pointBWorld=function(e){return{x:(e.bodyB?e.bodyB.position.x:0)+(e.pointB?e.pointB.x:0),y:(e.bodyB?e.bodyB.position.y:0)+(e.pointB?e.pointB.y:0)}}},function(e,t,n){var i={};e.exports=i;var o=n(2),r=n(0);i.fromVertices=function(e){for(var t={},n=0;n<e.length;n++){var i=(n+1)%e.length,a=o.normalise({x:e[i].y-e[n].y,y:e[n].x-e[i].x}),s=0===a.y?1/0:a.x/a.y;t[s=s.toFixed(3).toString()]=a}return r.values(t)},i.rotate=function(e,t){if(0!==t)for(var n=Math.cos(t),i=Math.sin(t),o=0;o<e.length;o++){var r,a=e[o];r=a.x*n-a.y*i,a.y=a.x*i+a.y*n,a.x=r}}},function(e,t,n){var i={};e.exports=i;var o=n(3),r=n(0),a=n(4),s=n(1),l=n(2);i.rectangle=function(e,t,n,i,s){s=s||{};var l={label:"Rectangle Body",position:{x:e,y:t},vertices:o.fromPath("L 0 0 L "+n+" 0 L "+n+" "+i+" L 0 "+i)};if(s.chamfer){var c=s.chamfer;l.vertices=o.chamfer(l.vertices,c.radius,c.quality,c.qualityMin,c.qualityMax),delete s.chamfer}return a.create(r.extend({},l,s))},i.trapezoid=function(e,t,n,i,s,l){l=l||{};var c,u=n*(s*=.5),d=u+(1-2*s)*n,p=d+u;c=s<.5?"L 0 0 L "+u+" "+-i+" L "+d+" "+-i+" L "+p+" 0":"L 0 0 L "+d+" "+-i+" L "+p+" 0";var f={label:"Trapezoid Body",position:{x:e,y:t},vertices:o.fromPath(c)};if(l.chamfer){var v=l.chamfer;f.vertices=o.chamfer(f.vertices,v.radius,v.quality,v.qualityMin,v.qualityMax),delete l.chamfer}return a.create(r.extend({},f,l))},i.circle=function(e,t,n,o,a){o=o||{};var s={label:"Circle Body",circleRadius:n};a=a||25;var l=Math.ceil(Math.max(10,Math.min(a,n)));return l%2==1&&(l+=1),i.polygon(e,t,l,n,r.extend({},s,o))},i.polygon=function(e,t,n,s,l){if(l=l||{},n<3)return i.circle(e,t,s,l);for(var c=2*Math.PI/n,u="",d=.5*c,p=0;p<n;p+=1){var f=d+p*c,v=Math.cos(f)*s,y=Math.sin(f)*s;u+="L "+v.toFixed(3)+" "+y.toFixed(3)+" "}var m={label:"Polygon Body",position:{x:e,y:t},vertices:o.fromPath(u)};if(l.chamfer){var g=l.chamfer;m.vertices=o.chamfer(m.vertices,g.radius,g.quality,g.qualityMin,g.qualityMax),delete l.chamfer}return a.create(r.extend({},m,l))},i.fromVertices=function(e,t,n,i,c,u,d,p){var f,v,y,m,g,x,h,b,S,w,A=r.getDecomp();for(f=Boolean(A&&A.quickDecomp),i=i||{},y=[],c=void 0!==c&&c,u=void 0!==u?u:.01,d=void 0!==d?d:10,p=void 0!==p?p:.01,r.isArray(n[0])||(n=[n]),S=0;S<n.length;S+=1)if(g=n[S],!(m=o.isConvex(g))&&!f&&r.warnOnce("Bodies.fromVertices: Install the 'poly-decomp' library and use Common.setDecomp or provide 'decomp' as a global to decompose concave vertices."),m||!f)g=m?o.clockwiseSort(g):o.hull(g),y.push({position:{x:e,y:t},vertices:g});else{var P=g.map((function(e){return[e.x,e.y]}));A.makeCCW(P),!1!==u&&A.removeCollinearPoints(P,u),!1!==p&&A.removeDuplicatePoints&&A.removeDuplicatePoints(P,p);var C=A.quickDecomp(P);for(x=0;x<C.length;x++){var M=C[x].map((function(e){return{x:e[0],y:e[1]}}));d>0&&o.area(M)<d||y.push({position:o.centre(M),vertices:M})}}for(x=0;x<y.length;x++)y[x]=a.create(r.extend(y[x],i));if(c)for(x=0;x<y.length;x++){var B=y[x];for(h=x+1;h<y.length;h++){var _=y[h];if(s.overlaps(B.bounds,_.bounds)){var k=B.vertices,I=_.vertices;for(b=0;b<B.vertices.length;b++)for(w=0;w<_.vertices.length;w++){var T=l.magnitudeSquared(l.sub(k[(b+1)%k.length],I[w])),R=l.magnitudeSquared(l.sub(k[b],I[(w+1)%I.length]));T<5&&R<5&&(k[b].isInternal=!0,I[w].isInternal=!0)}}}}return y.length>1?(v=a.create(r.extend({parts:y.slice(0)},i)),a.setPosition(v,{x:e,y:t}),v):y[0]}},function(e,t,n){var i={};e.exports=i;var o=n(0),r=n(8);i.create=function(e){return o.extend({bodies:[],pairs:null},e)},i.setBodies=function(e,t){e.bodies=t.slice(0)},i.clear=function(e){e.bodies=[]},i.collisions=function(e){var t,n,o=[],a=e.pairs,s=e.bodies,l=s.length,c=i.canCollide,u=r.collides;for(s.sort(i._compareBoundsX),t=0;t<l;t++){var d=s[t],p=d.bounds,f=d.bounds.max.x,v=d.bounds.max.y,y=d.bounds.min.y,m=d.isStatic||d.isSleeping,g=d.parts.length,x=1===g;for(n=t+1;n<l;n++){var h=s[n];if((B=h.bounds).min.x>f)break;if(!(v<B.min.y||y>B.max.y)&&(!m||!h.isStatic&&!h.isSleeping)&&c(d.collisionFilter,h.collisionFilter)){var b=h.parts.length;if(x&&1===b)(C=u(d,h,a))&&o.push(C);else for(var S=b>1?1:0,w=g>1?1:0;w<g;w++)for(var A=d.parts[w],P=(p=A.bounds,S);P<b;P++){var C,M=h.parts[P],B=M.bounds;p.min.x>B.max.x||p.max.x<B.min.x||p.max.y<B.min.y||p.min.y>B.max.y||(C=u(A,M,a))&&o.push(C)}}}}return o},i.canCollide=function(e,t){return e.group===t.group&&0!==e.group?e.group>0:0!=(e.mask&t.category)&&0!=(t.mask&e.category)},i._compareBoundsX=function(e,t){return e.bounds.min.x-t.bounds.min.x}},function(e,t,n){var i={};e.exports=i;var o=n(0);i.create=function(e){var t={};return e||o.log("Mouse.create: element was undefined, defaulting to document.body","warn"),t.element=e||document.body,t.absolute={x:0,y:0},t.position={x:0,y:0},t.mousedownPosition={x:0,y:0},t.mouseupPosition={x:0,y:0},t.offset={x:0,y:0},t.scale={x:1,y:1},t.wheelDelta=0,t.button=-1,t.pixelRatio=parseInt(t.element.getAttribute("data-pixel-ratio"),10)||1,t.sourceEvents={mousemove:null,mousedown:null,mouseup:null,mousewheel:null},t.mousemove=function(e){var n=i._getRelativeMousePosition(e,t.element,t.pixelRatio);e.changedTouches&&(t.button=0,e.preventDefault()),t.absolute.x=n.x,t.absolute.y=n.y,t.position.x=t.absolute.x*t.scale.x+t.offset.x,t.position.y=t.absolute.y*t.scale.y+t.offset.y,t.sourceEvents.mousemove=e},t.mousedown=function(e){var n=i._getRelativeMousePosition(e,t.element,t.pixelRatio);e.changedTouches?(t.button=0,e.preventDefault()):t.button=e.button,t.absolute.x=n.x,t.absolute.y=n.y,t.position.x=t.absolute.x*t.scale.x+t.offset.x,t.position.y=t.absolute.y*t.scale.y+t.offset.y,t.mousedownPosition.x=t.position.x,t.mousedownPosition.y=t.position.y,t.sourceEvents.mousedown=e},t.mouseup=function(e){var n=i._getRelativeMousePosition(e,t.element,t.pixelRatio);e.changedTouches&&e.preventDefault(),t.button=-1,t.absolute.x=n.x,t.absolute.y=n.y,t.position.x=t.absolute.x*t.scale.x+t.offset.x,t.position.y=t.absolute.y*t.scale.y+t.offset.y,t.mouseupPosition.x=t.position.x,t.mouseupPosition.y=t.position.y,t.sourceEvents.mouseup=e},t.mousewheel=function(e){t.wheelDelta=Math.max(-1,Math.min(1,e.wheelDelta||-e.detail)),e.preventDefault()},i.setElement(t,t.element),t},i.setElement=function(e,t){e.element=t,t.addEventListener("mousemove",e.mousemove),t.addEventListener("mousedown",e.mousedown),t.addEventListener("mouseup",e.mouseup),t.addEventListener("mousewheel",e.mousewheel),t.addEventListener("DOMMouseScroll",e.mousewheel),t.addEventListener("touchmove",e.mousemove),t.addEventListener("touchstart",e.mousedown),t.addEventListener("touchend",e.mouseup)},i.clearSourceEvents=function(e){e.sourceEvents.mousemove=null,e.sourceEvents.mousedown=null,e.sourceEvents.mouseup=null,e.sourceEvents.mousewheel=null,e.wheelDelta=0},i.setOffset=function(e,t){e.offset.x=t.x,e.offset.y=t.y,e.position.x=e.absolute.x*e.scale.x+e.offset.x,e.position.y=e.absolute.y*e.scale.y+e.offset.y},i.setScale=function(e,t){e.scale.x=t.x,e.scale.y=t.y,e.position.x=e.absolute.x*e.scale.x+e.offset.x,e.position.y=e.absolute.y*e.scale.y+e.offset.y},i._getRelativeMousePosition=function(e,t,n){var i,o,r=t.getBoundingClientRect(),a=document.documentElement||document.body.parentNode||document.body,s=void 0!==window.pageXOffset?window.pageXOffset:a.scrollLeft,l=void 0!==window.pageYOffset?window.pageYOffset:a.scrollTop,c=e.changedTouches;return c?(i=c[0].pageX-r.left-s,o=c[0].pageY-r.top-l):(i=e.pageX-r.left-s,o=e.pageY-r.top-l),{x:i/(t.clientWidth/(t.width||t.clientWidth)*n),y:o/(t.clientHeight/(t.height||t.clientHeight)*n)}}},function(e,t,n){var i={};e.exports=i;var o=n(0);i._registry={},i.register=function(e){if(i.isPlugin(e)||o.warn("Plugin.register:",i.toString(e),"does not implement all required fields."),e.name in i._registry){var t=i._registry[e.name],n=i.versionParse(e.version).number,r=i.versionParse(t.version).number;n>r?(o.warn("Plugin.register:",i.toString(t),"was upgraded to",i.toString(e)),i._registry[e.name]=e):n<r?o.warn("Plugin.register:",i.toString(t),"can not be downgraded to",i.toString(e)):e!==t&&o.warn("Plugin.register:",i.toString(e),"is already registered to different plugin object")}else i._registry[e.name]=e;return e},i.resolve=function(e){return i._registry[i.dependencyParse(e).name]},i.toString=function(e){return"string"==typeof e?e:(e.name||"anonymous")+"@"+(e.version||e.range||"0.0.0")},i.isPlugin=function(e){return e&&e.name&&e.version&&e.install},i.isUsed=function(e,t){return e.used.indexOf(t)>-1},i.isFor=function(e,t){var n=e.for&&i.dependencyParse(e.for);return!e.for||t.name===n.name&&i.versionSatisfies(t.version,n.range)},i.use=function(e,t){if(e.uses=(e.uses||[]).concat(t||[]),0!==e.uses.length){for(var n=i.dependencies(e),r=o.topologicalSort(n),a=[],s=0;s<r.length;s+=1)if(r[s]!==e.name){var l=i.resolve(r[s]);l?i.isUsed(e,l.name)||(i.isFor(l,e)||(o.warn("Plugin.use:",i.toString(l),"is for",l.for,"but installed on",i.toString(e)+"."),l._warned=!0),l.install?l.install(e):(o.warn("Plugin.use:",i.toString(l),"does not specify an install function."),l._warned=!0),l._warned?(a.push("🔶 "+i.toString(l)),delete l._warned):a.push("✅ "+i.toString(l)),e.used.push(l.name)):a.push("❌ "+r[s])}a.length>0&&o.info(a.join("  "))}else o.warn("Plugin.use:",i.toString(e),"does not specify any dependencies to install.")},i.dependencies=function(e,t){var n=i.dependencyParse(e),r=n.name;if(!(r in(t=t||{}))){e=i.resolve(e)||e,t[r]=o.map(e.uses||[],(function(t){i.isPlugin(t)&&i.register(t);var r=i.dependencyParse(t),a=i.resolve(t);return a&&!i.versionSatisfies(a.version,r.range)?(o.warn("Plugin.dependencies:",i.toString(a),"does not satisfy",i.toString(r),"used by",i.toString(n)+"."),a._warned=!0,e._warned=!0):a||(o.warn("Plugin.dependencies:",i.toString(t),"used by",i.toString(n),"could not be resolved."),e._warned=!0),r.name}));for(var a=0;a<t[r].length;a+=1)i.dependencies(t[r][a],t);return t}},i.dependencyParse=function(e){return o.isString(e)?(/^[\w-]+(@(\*|[\^~]?\d+\.\d+\.\d+(-[0-9A-Za-z-+]+)?))?$/.test(e)||o.warn("Plugin.dependencyParse:",e,"is not a valid dependency string."),{name:e.split("@")[0],range:e.split("@")[1]||"*"}):{name:e.name,range:e.range||e.version}},i.versionParse=function(e){var t=/^(\*)|(\^|~|>=|>)?\s*((\d+)\.(\d+)\.(\d+))(-[0-9A-Za-z-+]+)?$/;t.test(e)||o.warn("Plugin.versionParse:",e,"is not a valid version or range.");var n=t.exec(e),i=Number(n[4]),r=Number(n[5]),a=Number(n[6]);return{isRange:Boolean(n[1]||n[2]),version:n[3],range:e,operator:n[1]||n[2]||"",major:i,minor:r,patch:a,parts:[i,r,a],prerelease:n[7],number:1e8*i+1e4*r+a}},i.versionSatisfies=function(e,t){t=t||"*";var n=i.versionParse(t),o=i.versionParse(e);if(n.isRange){if("*"===n.operator||"*"===e)return!0;if(">"===n.operator)return o.number>n.number;if(">="===n.operator)return o.number>=n.number;if("~"===n.operator)return o.major===n.major&&o.minor===n.minor&&o.patch>=n.patch;if("^"===n.operator)return n.major>0?o.major===n.major&&o.number>=n.number:n.minor>0?o.minor===n.minor&&o.patch>=n.patch:o.patch===n.patch}return e===t||"*"===e}},function(e,t){var n={};e.exports=n,n.create=function(e){return{vertex:e,normalImpulse:0,tangentImpulse:0}}},function(e,t,n){var i={};e.exports=i;var o=n(7),r=n(18),a=n(13),s=n(19),l=n(5),c=n(6),u=n(10),d=n(0),p=n(4);i.create=function(e){e=e||{};var t=d.extend({positionIterations:6,velocityIterations:4,constraintIterations:2,enableSleeping:!1,events:[],plugin:{},gravity:{x:0,y:1,scale:.001},timing:{timestamp:0,timeScale:1,lastDelta:0,lastElapsed:0}},e);return t.world=e.world||c.create({label:"World"}),t.pairs=e.pairs||s.create(),t.detector=e.detector||a.create(),t.grid={buckets:[]},t.world.gravity=t.gravity,t.broadphase=t.grid,t.metrics={},t},i.update=function(e,t){var n,p=d.now(),f=e.world,v=e.detector,y=e.pairs,m=e.timing,g=m.timestamp;t=void 0!==t?t:d._baseDelta,t*=m.timeScale,m.timestamp+=t,m.lastDelta=t;var x={timestamp:m.timestamp,delta:t};l.trigger(e,"beforeUpdate",x);var h=c.allBodies(f),b=c.allConstraints(f);for(f.isModified&&(a.setBodies(v,h),c.setModified(f,!1,!1,!0)),e.enableSleeping&&o.update(h,t),i._bodiesApplyGravity(h,e.gravity),t>0&&i._bodiesUpdate(h,t),u.preSolveAll(h),n=0;n<e.constraintIterations;n++)u.solveAll(b,t);u.postSolveAll(h),v.pairs=e.pairs;var S=a.collisions(v);s.update(y,S,g),e.enableSleeping&&o.afterCollisions(y.list),y.collisionStart.length>0&&l.trigger(e,"collisionStart",{pairs:y.collisionStart});var w=d.clamp(20/e.positionIterations,0,1);for(r.preSolvePosition(y.list),n=0;n<e.positionIterations;n++)r.solvePosition(y.list,t,w);for(r.postSolvePosition(h),u.preSolveAll(h),n=0;n<e.constraintIterations;n++)u.solveAll(b,t);for(u.postSolveAll(h),r.preSolveVelocity(y.list),n=0;n<e.velocityIterations;n++)r.solveVelocity(y.list,t);return i._bodiesUpdateVelocities(h),y.collisionActive.length>0&&l.trigger(e,"collisionActive",{pairs:y.collisionActive}),y.collisionEnd.length>0&&l.trigger(e,"collisionEnd",{pairs:y.collisionEnd}),i._bodiesClearForces(h),l.trigger(e,"afterUpdate",x),e.timing.lastElapsed=d.now()-p,e},i.merge=function(e,t){if(d.extend(e,t),t.world){e.world=t.world,i.clear(e);for(var n=c.allBodies(e.world),r=0;r<n.length;r++){var a=n[r];o.set(a,!1),a.id=d.nextId()}}},i.clear=function(e){s.clear(e.pairs),a.clear(e.detector)},i._bodiesClearForces=function(e){for(var t=e.length,n=0;n<t;n++){var i=e[n];i.force.x=0,i.force.y=0,i.torque=0}},i._bodiesApplyGravity=function(e,t){var n=void 0!==t.scale?t.scale:.001,i=e.length;if((0!==t.x||0!==t.y)&&0!==n)for(var o=0;o<i;o++){var r=e[o];r.isStatic||r.isSleeping||(r.force.y+=r.mass*t.y*n,r.force.x+=r.mass*t.x*n)}},i._bodiesUpdate=function(e,t){for(var n=e.length,i=0;i<n;i++){var o=e[i];o.isStatic||o.isSleeping||p.update(o,t)}},i._bodiesUpdateVelocities=function(e){for(var t=e.length,n=0;n<t;n++)p.updateVelocities(e[n])}},function(e,t,n){var i={};e.exports=i;var o=n(3),r=n(0),a=n(1);i._restingThresh=2,i._restingThreshTangent=Math.sqrt(6),i._positionDampen=.9,i._positionWarming=.8,i._frictionNormalMultiplier=5,i._frictionMaxStatic=Number.MAX_VALUE,i.preSolvePosition=function(e){var t,n,i,o=e.length;for(t=0;t<o;t++)(n=e[t]).isActive&&(i=n.activeContacts.length,n.collision.parentA.totalContacts+=i,n.collision.parentB.totalContacts+=i)},i.solvePosition=function(e,t,n){var o,a,s,l,c,u,d,p,f=i._positionDampen*(n||1),v=r.clamp(t/r._baseDelta,0,1),y=e.length;for(o=0;o<y;o++)(a=e[o]).isActive&&!a.isSensor&&(l=(s=a.collision).parentA,c=s.parentB,u=s.normal,a.separation=u.x*(c.positionImpulse.x+s.penetration.x-l.positionImpulse.x)+u.y*(c.positionImpulse.y+s.penetration.y-l.positionImpulse.y));for(o=0;o<y;o++)(a=e[o]).isActive&&!a.isSensor&&(l=(s=a.collision).parentA,c=s.parentB,u=s.normal,p=a.separation-a.slop*v,(l.isStatic||c.isStatic)&&(p*=2),l.isStatic||l.isSleeping||(d=f/l.totalContacts,l.positionImpulse.x+=u.x*p*d,l.positionImpulse.y+=u.y*p*d),c.isStatic||c.isSleeping||(d=f/c.totalContacts,c.positionImpulse.x-=u.x*p*d,c.positionImpulse.y-=u.y*p*d))},i.postSolvePosition=function(e){for(var t=i._positionWarming,n=e.length,r=o.translate,s=a.update,l=0;l<n;l++){var c=e[l],u=c.positionImpulse,d=u.x,p=u.y,f=c.velocity;if(c.totalContacts=0,0!==d||0!==p){for(var v=0;v<c.parts.length;v++){var y=c.parts[v];r(y.vertices,u),s(y.bounds,y.vertices,f),y.position.x+=d,y.position.y+=p}c.positionPrev.x+=d,c.positionPrev.y+=p,d*f.x+p*f.y<0?(u.x=0,u.y=0):(u.x*=t,u.y*=t)}}},i.preSolveVelocity=function(e){var t,n,i=e.length;for(t=0;t<i;t++){var o=e[t];if(o.isActive&&!o.isSensor){var r=o.activeContacts,a=r.length,s=o.collision,l=s.parentA,c=s.parentB,u=s.normal,d=s.tangent;for(n=0;n<a;n++){var p=r[n],f=p.vertex,v=p.normalImpulse,y=p.tangentImpulse;if(0!==v||0!==y){var m=u.x*v+d.x*y,g=u.y*v+d.y*y;l.isStatic||l.isSleeping||(l.positionPrev.x+=m*l.inverseMass,l.positionPrev.y+=g*l.inverseMass,l.anglePrev+=l.inverseInertia*((f.x-l.position.x)*g-(f.y-l.position.y)*m)),c.isStatic||c.isSleeping||(c.positionPrev.x-=m*c.inverseMass,c.positionPrev.y-=g*c.inverseMass,c.anglePrev-=c.inverseInertia*((f.x-c.position.x)*g-(f.y-c.position.y)*m))}}}}},i.solveVelocity=function(e,t){var n,o,a,s,l=t/r._baseDelta,c=l*l*l,u=-i._restingThresh*l,d=i._restingThreshTangent,p=i._frictionNormalMultiplier*l,f=i._frictionMaxStatic,v=e.length;for(a=0;a<v;a++){var y=e[a];if(y.isActive&&!y.isSensor){var m=y.collision,g=m.parentA,x=m.parentB,h=g.velocity,b=x.velocity,S=m.normal.x,w=m.normal.y,A=m.tangent.x,P=m.tangent.y,C=y.activeContacts,M=C.length,B=1/M,_=g.inverseMass+x.inverseMass,k=y.friction*y.frictionStatic*p;for(h.x=g.position.x-g.positionPrev.x,h.y=g.position.y-g.positionPrev.y,b.x=x.position.x-x.positionPrev.x,b.y=x.position.y-x.positionPrev.y,g.angularVelocity=g.angle-g.anglePrev,x.angularVelocity=x.angle-x.anglePrev,s=0;s<M;s++){var I=C[s],T=I.vertex,R=T.x-g.position.x,V=T.y-g.position.y,E=T.x-x.position.x,L=T.y-x.position.y,D=h.x-V*g.angularVelocity,O=h.y+R*g.angularVelocity,F=D-(b.x-L*x.angularVelocity),H=O-(b.y+E*x.angularVelocity),j=S*F+w*H,q=A*F+P*H,W=y.separation+j,G=Math.min(W,1),U=(G=W<0?0:G)*k;q<-U||q>U?(o=q>0?q:-q,(n=y.friction*(q>0?1:-1)*c)<-o?n=-o:n>o&&(n=o)):(n=q,o=f);var N=R*w-V*S,z=E*w-L*S,X=B/(_+g.inverseInertia*N*N+x.inverseInertia*z*z),Q=(1+y.restitution)*j*X;if(n*=X,j<u)I.normalImpulse=0;else{var Y=I.normalImpulse;I.normalImpulse+=Q,I.normalImpulse>0&&(I.normalImpulse=0),Q=I.normalImpulse-Y}if(q<-d||q>d)I.tangentImpulse=0;else{var Z=I.tangentImpulse;I.tangentImpulse+=n,I.tangentImpulse<-o&&(I.tangentImpulse=-o),I.tangentImpulse>o&&(I.tangentImpulse=o),n=I.tangentImpulse-Z}var $=S*Q+A*n,J=w*Q+P*n;g.isStatic||g.isSleeping||(g.positionPrev.x+=$*g.inverseMass,g.positionPrev.y+=J*g.inverseMass,g.anglePrev+=(R*J-V*$)*g.inverseInertia),x.isStatic||x.isSleeping||(x.positionPrev.x-=$*x.inverseMass,x.positionPrev.y-=J*x.inverseMass,x.anglePrev-=(E*J-L*$)*x.inverseInertia)}}}}},function(e,t,n){var i={};e.exports=i;var o=n(9),r=n(0);i.create=function(e){return r.extend({table:{},list:[],collisionStart:[],collisionActive:[],collisionEnd:[]},e)},i.update=function(e,t,n){var i,r,a,s,l=e.list,c=l.length,u=e.table,d=t.length,p=e.collisionStart,f=e.collisionEnd,v=e.collisionActive;for(p.length=0,f.length=0,v.length=0,s=0;s<c;s++)l[s].confirmedActive=!1;for(s=0;s<d;s++)(a=(i=t[s]).pair)?(a.isActive?v.push(a):p.push(a),o.update(a,i,n),a.confirmedActive=!0):(u[(a=o.create(i,n)).id]=a,p.push(a),l.push(a));var y=[];for(c=l.length,s=0;s<c;s++)(a=l[s]).confirmedActive||(o.setActive(a,!1,n),f.push(a),a.collision.bodyA.isSleeping||a.collision.bodyB.isSleeping||y.push(s));for(s=0;s<y.length;s++)a=l[r=y[s]-s],l.splice(r,1),delete u[a.id]},i.clear=function(e){return e.table={},e.list.length=0,e.collisionStart.length=0,e.collisionActive.length=0,e.collisionEnd.length=0,e}},function(e,t,n){var i=e.exports=n(21);i.Axes=n(11),i.Bodies=n(12),i.Body=n(4),i.Bounds=n(1),i.Collision=n(8),i.Common=n(0),i.Composite=n(6),i.Composites=n(22),i.Constraint=n(10),i.Contact=n(16),i.Detector=n(13),i.Engine=n(17),i.Events=n(5),i.Grid=n(23),i.Mouse=n(14),i.MouseConstraint=n(24),i.Pair=n(9),i.Pairs=n(19),i.Plugin=n(15),i.Query=n(25),i.Render=n(26),i.Resolver=n(18),i.Runner=n(27),i.SAT=n(28),i.Sleeping=n(7),i.Svg=n(29),i.Vector=n(2),i.Vertices=n(3),i.World=n(30),i.Engine.run=i.Runner.run,i.Common.deprecated(i.Engine,"run","Engine.run ➤ use Matter.Runner.run(engine) instead")},function(e,t,n){var i={};e.exports=i;var o=n(15),r=n(0);i.name="matter-js",i.version="0.19.0",i.uses=[],i.used=[],i.use=function(){o.use(i,Array.prototype.slice.call(arguments))},i.before=function(e,t){return e=e.replace(/^Matter./,""),r.chainPathBefore(i,e,t)},i.after=function(e,t){return e=e.replace(/^Matter./,""),r.chainPathAfter(i,e,t)}},function(e,t,n){var i={};e.exports=i;var o=n(6),r=n(10),a=n(0),s=n(4),l=n(12),c=a.deprecated;i.stack=function(e,t,n,i,r,a,l){for(var c,u=o.create({label:"Stack"}),d=e,p=t,f=0,v=0;v<i;v++){for(var y=0,m=0;m<n;m++){var g=l(d,p,m,v,c,f);if(g){var x=g.bounds.max.y-g.bounds.min.y,h=g.bounds.max.x-g.bounds.min.x;x>y&&(y=x),s.translate(g,{x:.5*h,y:.5*x}),d=g.bounds.max.x+r,o.addBody(u,g),c=g,f+=1}else d+=r}p+=y+a,d=e}return u},i.chain=function(e,t,n,i,s,l){for(var c=e.bodies,u=1;u<c.length;u++){var d=c[u-1],p=c[u],f=d.bounds.max.y-d.bounds.min.y,v=d.bounds.max.x-d.bounds.min.x,y=p.bounds.max.y-p.bounds.min.y,m={bodyA:d,pointA:{x:v*t,y:f*n},bodyB:p,pointB:{x:(p.bounds.max.x-p.bounds.min.x)*i,y:y*s}},g=a.extend(m,l);o.addConstraint(e,r.create(g))}return e.label+=" Chain",e},i.mesh=function(e,t,n,i,s){var l,c,u,d,p,f=e.bodies;for(l=0;l<n;l++){for(c=1;c<t;c++)u=f[c-1+l*t],d=f[c+l*t],o.addConstraint(e,r.create(a.extend({bodyA:u,bodyB:d},s)));if(l>0)for(c=0;c<t;c++)u=f[c+(l-1)*t],d=f[c+l*t],o.addConstraint(e,r.create(a.extend({bodyA:u,bodyB:d},s))),i&&c>0&&(p=f[c-1+(l-1)*t],o.addConstraint(e,r.create(a.extend({bodyA:p,bodyB:d},s)))),i&&c<t-1&&(p=f[c+1+(l-1)*t],o.addConstraint(e,r.create(a.extend({bodyA:p,bodyB:d},s))))}return e.label+=" Mesh",e},i.pyramid=function(e,t,n,o,r,a,l){return i.stack(e,t,n,o,r,a,(function(t,i,a,c,u,d){var p=Math.min(o,Math.ceil(n/2)),f=u?u.bounds.max.x-u.bounds.min.x:0;if(!(c>p||a<(c=p-c)||a>n-1-c))return 1===d&&s.translate(u,{x:(a+(n%2==1?1:-1))*f,y:0}),l(e+(u?a*f:0)+a*r,i,a,c,u,d)}))},i.newtonsCradle=function(e,t,n,i,a){for(var s=o.create({label:"Newtons Cradle"}),c=0;c<n;c++){var u=l.circle(e+c*(1.9*i),t+a,i,{inertia:1/0,restitution:1,friction:0,frictionAir:1e-4,slop:1}),d=r.create({pointA:{x:e+c*(1.9*i),y:t},bodyB:u});o.addBody(s,u),o.addConstraint(s,d)}return s},c(i,"newtonsCradle","Composites.newtonsCradle ➤ moved to newtonsCradle example"),i.car=function(e,t,n,i,a){var c=s.nextGroup(!0),u=.5*-n+20,d=.5*n-20,p=o.create({label:"Car"}),f=l.rectangle(e,t,n,i,{collisionFilter:{group:c},chamfer:{radius:.5*i},density:2e-4}),v=l.circle(e+u,t+0,a,{collisionFilter:{group:c},friction:.8}),y=l.circle(e+d,t+0,a,{collisionFilter:{group:c},friction:.8}),m=r.create({bodyB:f,pointB:{x:u,y:0},bodyA:v,stiffness:1,length:0}),g=r.create({bodyB:f,pointB:{x:d,y:0},bodyA:y,stiffness:1,length:0});return o.addBody(p,f),o.addBody(p,v),o.addBody(p,y),o.addConstraint(p,m),o.addConstraint(p,g),p},c(i,"car","Composites.car ➤ moved to car example"),i.softBody=function(e,t,n,o,r,s,c,u,d,p){d=a.extend({inertia:1/0},d),p=a.extend({stiffness:.2,render:{type:"line",anchors:!1}},p);var f=i.stack(e,t,n,o,r,s,(function(e,t){return l.circle(e,t,u,d)}));return i.mesh(f,n,o,c,p),f.label="Soft Body",f},c(i,"softBody","Composites.softBody ➤ moved to softBody and cloth examples")},function(e,t,n){var i={};e.exports=i;var o=n(9),r=n(0),a=r.deprecated;i.create=function(e){return r.extend({buckets:{},pairs:{},pairsList:[],bucketWidth:48,bucketHeight:48},e)},i.update=function(e,t,n,o){var r,a,s,l,c,u=n.world,d=e.buckets,p=!1;for(r=0;r<t.length;r++){var f=t[r];if((!f.isSleeping||o)&&(!u.bounds||!(f.bounds.max.x<u.bounds.min.x||f.bounds.min.x>u.bounds.max.x||f.bounds.max.y<u.bounds.min.y||f.bounds.min.y>u.bounds.max.y))){var v=i._getRegion(e,f);if(!f.region||v.id!==f.region.id||o){f.region&&!o||(f.region=v);var y=i._regionUnion(v,f.region);for(a=y.startCol;a<=y.endCol;a++)for(s=y.startRow;s<=y.endRow;s++){l=d[c=i._getBucketId(a,s)];var m=a>=v.startCol&&a<=v.endCol&&s>=v.startRow&&s<=v.endRow,g=a>=f.region.startCol&&a<=f.region.endCol&&s>=f.region.startRow&&s<=f.region.endRow;!m&&g&&g&&l&&i._bucketRemoveBody(e,l,f),(f.region===v||m&&!g||o)&&(l||(l=i._createBucket(d,c)),i._bucketAddBody(e,l,f))}f.region=v,p=!0}}}p&&(e.pairsList=i._createActivePairsList(e))},a(i,"update","Grid.update ➤ replaced by Matter.Detector"),i.clear=function(e){e.buckets={},e.pairs={},e.pairsList=[]},a(i,"clear","Grid.clear ➤ replaced by Matter.Detector"),i._regionUnion=function(e,t){var n=Math.min(e.startCol,t.startCol),o=Math.max(e.endCol,t.endCol),r=Math.min(e.startRow,t.startRow),a=Math.max(e.endRow,t.endRow);return i._createRegion(n,o,r,a)},i._getRegion=function(e,t){var n=t.bounds,o=Math.floor(n.min.x/e.bucketWidth),r=Math.floor(n.max.x/e.bucketWidth),a=Math.floor(n.min.y/e.bucketHeight),s=Math.floor(n.max.y/e.bucketHeight);return i._createRegion(o,r,a,s)},i._createRegion=function(e,t,n,i){return{id:e+","+t+","+n+","+i,startCol:e,endCol:t,startRow:n,endRow:i}},i._getBucketId=function(e,t){return"C"+e+"R"+t},i._createBucket=function(e,t){return e[t]=[]},i._bucketAddBody=function(e,t,n){var i,r=e.pairs,a=o.id,s=t.length;for(i=0;i<s;i++){var l=t[i];if(!(n.id===l.id||n.isStatic&&l.isStatic)){var c=a(n,l),u=r[c];u?u[2]+=1:r[c]=[n,l,1]}}t.push(n)},i._bucketRemoveBody=function(e,t,n){var i,a=e.pairs,s=o.id;t.splice(r.indexOf(t,n),1);var l=t.length;for(i=0;i<l;i++){var c=a[s(n,t[i])];c&&(c[2]-=1)}},i._createActivePairsList=function(e){var t,n,i=e.pairs,o=r.keys(i),a=o.length,s=[];for(n=0;n<a;n++)(t=i[o[n]])[2]>0?s.push(t):delete i[o[n]];return s}},function(e,t,n){var i={};e.exports=i;var o=n(3),r=n(7),a=n(14),s=n(5),l=n(13),c=n(10),u=n(6),d=n(0),p=n(1);i.create=function(e,t){var n=(e?e.mouse:null)||(t?t.mouse:null);n||(e&&e.render&&e.render.canvas?n=a.create(e.render.canvas):t&&t.element?n=a.create(t.element):(n=a.create(),d.warn("MouseConstraint.create: options.mouse was undefined, options.element was undefined, may not function as expected")));var o={type:"mouseConstraint",mouse:n,element:null,body:null,constraint:c.create({label:"Mouse Constraint",pointA:n.position,pointB:{x:0,y:0},length:.01,stiffness:.1,angularStiffness:1,render:{strokeStyle:"#90EE90",lineWidth:3}}),collisionFilter:{category:1,mask:4294967295,group:0}},r=d.extend(o,t);return s.on(e,"beforeUpdate",(function(){var t=u.allBodies(e.world);i.update(r,t),i._triggerEvents(r)})),r},i.update=function(e,t){var n=e.mouse,i=e.constraint,a=e.body;if(0===n.button){if(i.bodyB)r.set(i.bodyB,!1),i.pointA=n.position;else for(var c=0;c<t.length;c++)if(a=t[c],p.contains(a.bounds,n.position)&&l.canCollide(a.collisionFilter,e.collisionFilter))for(var u=a.parts.length>1?1:0;u<a.parts.length;u++){var d=a.parts[u];if(o.contains(d.vertices,n.position)){i.pointA=n.position,i.bodyB=e.body=a,i.pointB={x:n.position.x-a.position.x,y:n.position.y-a.position.y},i.angleB=a.angle,r.set(a,!1),s.trigger(e,"startdrag",{mouse:n,body:a});break}}}else i.bodyB=e.body=null,i.pointB=null,a&&s.trigger(e,"enddrag",{mouse:n,body:a})},i._triggerEvents=function(e){var t=e.mouse,n=t.sourceEvents;n.mousemove&&s.trigger(e,"mousemove",{mouse:t}),n.mousedown&&s.trigger(e,"mousedown",{mouse:t}),n.mouseup&&s.trigger(e,"mouseup",{mouse:t}),a.clearSourceEvents(t)}},function(e,t,n){var i={};e.exports=i;var o=n(2),r=n(8),a=n(1),s=n(12),l=n(3);i.collides=function(e,t){for(var n=[],i=t.length,o=e.bounds,s=r.collides,l=a.overlaps,c=0;c<i;c++){var u=t[c],d=u.parts.length,p=1===d?0:1;if(l(u.bounds,o))for(var f=p;f<d;f++){var v=u.parts[f];if(l(v.bounds,o)){var y=s(v,e);if(y){n.push(y);break}}}}return n},i.ray=function(e,t,n,r){r=r||1e-100;for(var a=o.angle(t,n),l=o.magnitude(o.sub(t,n)),c=.5*(n.x+t.x),u=.5*(n.y+t.y),d=s.rectangle(c,u,l,r,{angle:a}),p=i.collides(d,e),f=0;f<p.length;f+=1){var v=p[f];v.body=v.bodyB=v.bodyA}return p},i.region=function(e,t,n){for(var i=[],o=0;o<e.length;o++){var r=e[o],s=a.overlaps(r.bounds,t);(s&&!n||!s&&n)&&i.push(r)}return i},i.point=function(e,t){for(var n=[],i=0;i<e.length;i++){var o=e[i];if(a.contains(o.bounds,t))for(var r=1===o.parts.length?0:1;r<o.parts.length;r++){var s=o.parts[r];if(a.contains(s.bounds,t)&&l.contains(s.vertices,t)){n.push(o);break}}}return n}},function(e,t,n){var i={};e.exports=i;var o=n(4),r=n(0),a=n(6),s=n(1),l=n(5),c=n(2),u=n(14);!function(){var e,t;"undefined"!=typeof window&&(e=window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.msRequestAnimationFrame||function(e){window.setTimeout((function(){e(r.now())}),1e3/60)},t=window.cancelAnimationFrame||window.mozCancelAnimationFrame||window.webkitCancelAnimationFrame||window.msCancelAnimationFrame),i._goodFps=30,i._goodDelta=1e3/60,i.create=function(e){var t={engine:null,element:null,canvas:null,mouse:null,frameRequestId:null,timing:{historySize:60,delta:0,deltaHistory:[],lastTime:0,lastTimestamp:0,lastElapsed:0,timestampElapsed:0,timestampElapsedHistory:[],engineDeltaHistory:[],engineElapsedHistory:[],elapsedHistory:[]},options:{width:800,height:600,pixelRatio:1,background:"#14151f",wireframeBackground:"#14151f",hasBounds:!!e.bounds,enabled:!0,wireframes:!0,showSleeping:!0,showDebug:!1,showStats:!1,showPerformance:!1,showBounds:!1,showVelocity:!1,showCollisions:!1,showSeparations:!1,showAxes:!1,showPositions:!1,showAngleIndicator:!1,showIds:!1,showVertexNumbers:!1,showConvexHulls:!1,showInternalEdges:!1,showMousePosition:!1}},n=r.extend(t,e);return n.canvas&&(n.canvas.width=n.options.width||n.canvas.width,n.canvas.height=n.options.height||n.canvas.height),n.mouse=e.mouse,n.engine=e.engine,n.canvas=n.canvas||p(n.options.width,n.options.height),n.context=n.canvas.getContext("2d"),n.textures={},n.bounds=n.bounds||{min:{x:0,y:0},max:{x:n.canvas.width,y:n.canvas.height}},n.controller=i,n.options.showBroadphase=!1,1!==n.options.pixelRatio&&i.setPixelRatio(n,n.options.pixelRatio),r.isElement(n.element)&&n.element.appendChild(n.canvas),n},i.run=function(t){!function o(r){t.frameRequestId=e(o),n(t,r),i.world(t,r),(t.options.showStats||t.options.showDebug)&&i.stats(t,t.context,r),(t.options.showPerformance||t.options.showDebug)&&i.performance(t,t.context,r)}()},i.stop=function(e){t(e.frameRequestId)},i.setPixelRatio=function(e,t){var n=e.options,i=e.canvas;"auto"===t&&(t=f(i)),n.pixelRatio=t,i.setAttribute("data-pixel-ratio",t),i.width=n.width*t,i.height=n.height*t,i.style.width=n.width+"px",i.style.height=n.height+"px"},i.lookAt=function(e,t,n,i){i=void 0===i||i,t=r.isArray(t)?t:[t],n=n||{x:0,y:0};for(var o={min:{x:1/0,y:1/0},max:{x:-1/0,y:-1/0}},a=0;a<t.length;a+=1){var s=t[a],l=s.bounds?s.bounds.min:s.min||s.position||s,c=s.bounds?s.bounds.max:s.max||s.position||s;l&&c&&(l.x<o.min.x&&(o.min.x=l.x),c.x>o.max.x&&(o.max.x=c.x),l.y<o.min.y&&(o.min.y=l.y),c.y>o.max.y&&(o.max.y=c.y))}var d=o.max.x-o.min.x+2*n.x,p=o.max.y-o.min.y+2*n.y,f=e.canvas.height,v=e.canvas.width/f,y=d/p,m=1,g=1;y>v?g=y/v:m=v/y,e.options.hasBounds=!0,e.bounds.min.x=o.min.x,e.bounds.max.x=o.min.x+d*m,e.bounds.min.y=o.min.y,e.bounds.max.y=o.min.y+p*g,i&&(e.bounds.min.x+=.5*d-d*m*.5,e.bounds.max.x+=.5*d-d*m*.5,e.bounds.min.y+=.5*p-p*g*.5,e.bounds.max.y+=.5*p-p*g*.5),e.bounds.min.x-=n.x,e.bounds.max.x-=n.x,e.bounds.min.y-=n.y,e.bounds.max.y-=n.y,e.mouse&&(u.setScale(e.mouse,{x:(e.bounds.max.x-e.bounds.min.x)/e.canvas.width,y:(e.bounds.max.y-e.bounds.min.y)/e.canvas.height}),u.setOffset(e.mouse,e.bounds.min))},i.startViewTransform=function(e){var t=e.bounds.max.x-e.bounds.min.x,n=e.bounds.max.y-e.bounds.min.y,i=t/e.options.width,o=n/e.options.height;e.context.setTransform(e.options.pixelRatio/i,0,0,e.options.pixelRatio/o,0,0),e.context.translate(-e.bounds.min.x,-e.bounds.min.y)},i.endViewTransform=function(e){e.context.setTransform(e.options.pixelRatio,0,0,e.options.pixelRatio,0,0)},i.world=function(e,t){var n,o=r.now(),d=e.engine,p=d.world,f=e.canvas,v=e.context,m=e.options,g=e.timing,x=a.allBodies(p),h=a.allConstraints(p),b=m.wireframes?m.wireframeBackground:m.background,S=[],w=[],A={timestamp:d.timing.timestamp};if(l.trigger(e,"beforeRender",A),e.currentBackground!==b&&y(e,b),v.globalCompositeOperation="source-in",v.fillStyle="transparent",v.fillRect(0,0,f.width,f.height),v.globalCompositeOperation="source-over",m.hasBounds){for(n=0;n<x.length;n++){var P=x[n];s.overlaps(P.bounds,e.bounds)&&S.push(P)}for(n=0;n<h.length;n++){var C=h[n],M=C.bodyA,B=C.bodyB,_=C.pointA,k=C.pointB;M&&(_=c.add(M.position,C.pointA)),B&&(k=c.add(B.position,C.pointB)),_&&k&&((s.contains(e.bounds,_)||s.contains(e.bounds,k))&&w.push(C))}i.startViewTransform(e),e.mouse&&(u.setScale(e.mouse,{x:(e.bounds.max.x-e.bounds.min.x)/e.options.width,y:(e.bounds.max.y-e.bounds.min.y)/e.options.height}),u.setOffset(e.mouse,e.bounds.min))}else w=h,S=x,1!==e.options.pixelRatio&&e.context.setTransform(e.options.pixelRatio,0,0,e.options.pixelRatio,0,0);!m.wireframes||d.enableSleeping&&m.showSleeping?i.bodies(e,S,v):(m.showConvexHulls&&i.bodyConvexHulls(e,S,v),i.bodyWireframes(e,S,v)),m.showBounds&&i.bodyBounds(e,S,v),(m.showAxes||m.showAngleIndicator)&&i.bodyAxes(e,S,v),m.showPositions&&i.bodyPositions(e,S,v),m.showVelocity&&i.bodyVelocity(e,S,v),m.showIds&&i.bodyIds(e,S,v),m.showSeparations&&i.separations(e,d.pairs.list,v),m.showCollisions&&i.collisions(e,d.pairs.list,v),m.showVertexNumbers&&i.vertexNumbers(e,S,v),m.showMousePosition&&i.mousePosition(e,e.mouse,v),i.constraints(w,v),m.hasBounds&&i.endViewTransform(e),l.trigger(e,"afterRender",A),g.lastElapsed=r.now()-o},i.stats=function(e,t,n){for(var i=e.engine,o=i.world,r=a.allBodies(o),s=0,l=0,c=0;c<r.length;c+=1)s+=r[c].parts.length;var u={Part:s,Body:r.length,Cons:a.allConstraints(o).length,Comp:a.allComposites(o).length,Pair:i.pairs.list.length};for(var d in t.fillStyle="#0e0f19",t.fillRect(l,0,302.5,44),t.font="12px Arial",t.textBaseline="top",t.textAlign="right",u){var p=u[d];t.fillStyle="#aaa",t.fillText(d,l+55,8),t.fillStyle="#eee",t.fillText(p,l+55,26),l+=55}},i.performance=function(e,t){var n=e.engine,o=e.timing,r=o.deltaHistory,a=o.elapsedHistory,s=o.timestampElapsedHistory,l=o.engineDeltaHistory,c=o.engineElapsedHistory,u=n.timing.lastDelta,p=d(r),f=d(a),v=d(l),y=d(c),m=d(s)/p||0,g=1e3/p||0;t.fillStyle="#0e0f19",t.fillRect(0,50,370,34),i.status(t,10,69,60,4,r.length,Math.round(g)+" fps",g/i._goodFps,(function(e){return r[e]/p-1})),i.status(t,82,69,60,4,l.length,u.toFixed(2)+" dt",i._goodDelta/u,(function(e){return l[e]/v-1})),i.status(t,154,69,60,4,c.length,y.toFixed(2)+" ut",1-y/i._goodFps,(function(e){return c[e]/y-1})),i.status(t,226,69,60,4,a.length,f.toFixed(2)+" rt",1-f/i._goodFps,(function(e){return a[e]/f-1})),i.status(t,298,69,60,4,s.length,m.toFixed(2)+" x",m*m*m,(function(e){return(s[e]/r[e]/m||0)-1}))},i.status=function(e,t,n,i,o,a,s,l,c){e.strokeStyle="#888",e.fillStyle="#444",e.lineWidth=1,e.fillRect(t,n+7,i,1),e.beginPath(),e.moveTo(t,n+7-o*r.clamp(.4*c(0),-2,2));for(var u=0;u<i;u+=1)e.lineTo(t+u,n+7-(u<a?o*r.clamp(.4*c(u),-2,2):0));e.stroke(),e.fillStyle="hsl("+r.clamp(25+95*l,0,120)+",100%,60%)",e.fillRect(t,n-7,4,4),e.font="12px Arial",e.textBaseline="middle",e.textAlign="right",e.fillStyle="#eee",e.fillText(s,t+i,n-5)},i.constraints=function(e,t){for(var n=t,i=0;i<e.length;i++){var o=e[i];if(o.render.visible&&o.pointA&&o.pointB){var a,s,l=o.bodyA,u=o.bodyB;if(a=l?c.add(l.position,o.pointA):o.pointA,"pin"===o.render.type)n.beginPath(),n.arc(a.x,a.y,3,0,2*Math.PI),n.closePath();else{if(s=u?c.add(u.position,o.pointB):o.pointB,n.beginPath(),n.moveTo(a.x,a.y),"spring"===o.render.type)for(var d,p=c.sub(s,a),f=c.perp(c.normalise(p)),v=Math.ceil(r.clamp(o.length/5,12,20)),y=1;y<v;y+=1)d=y%2==0?1:-1,n.lineTo(a.x+p.x*(y/v)+f.x*d*4,a.y+p.y*(y/v)+f.y*d*4);n.lineTo(s.x,s.y)}o.render.lineWidth&&(n.lineWidth=o.render.lineWidth,n.strokeStyle=o.render.strokeStyle,n.stroke()),o.render.anchors&&(n.fillStyle=o.render.strokeStyle,n.beginPath(),n.arc(a.x,a.y,3,0,2*Math.PI),n.arc(s.x,s.y,3,0,2*Math.PI),n.closePath(),n.fill())}}},i.bodies=function(e,t,n){var i,o,r,a,s=n,l=(e.engine,e.options),c=l.showInternalEdges||!l.wireframes;for(r=0;r<t.length;r++)if((i=t[r]).render.visible)for(a=i.parts.length>1?1:0;a<i.parts.length;a++)if((o=i.parts[a]).render.visible){if(l.showSleeping&&i.isSleeping?s.globalAlpha=.5*o.render.opacity:1!==o.render.opacity&&(s.globalAlpha=o.render.opacity),o.render.sprite&&o.render.sprite.texture&&!l.wireframes){var u=o.render.sprite,d=v(e,u.texture);s.translate(o.position.x,o.position.y),s.rotate(o.angle),s.drawImage(d,d.width*-u.xOffset*u.xScale,d.height*-u.yOffset*u.yScale,d.width*u.xScale,d.height*u.yScale),s.rotate(-o.angle),s.translate(-o.position.x,-o.position.y)}else{if(o.circleRadius)s.beginPath(),s.arc(o.position.x,o.position.y,o.circleRadius,0,2*Math.PI);else{s.beginPath(),s.moveTo(o.vertices[0].x,o.vertices[0].y);for(var p=1;p<o.vertices.length;p++)!o.vertices[p-1].isInternal||c?s.lineTo(o.vertices[p].x,o.vertices[p].y):s.moveTo(o.vertices[p].x,o.vertices[p].y),o.vertices[p].isInternal&&!c&&s.moveTo(o.vertices[(p+1)%o.vertices.length].x,o.vertices[(p+1)%o.vertices.length].y);s.lineTo(o.vertices[0].x,o.vertices[0].y),s.closePath()}l.wireframes?(s.lineWidth=1,s.strokeStyle="#bbb",s.stroke()):(s.fillStyle=o.render.fillStyle,o.render.lineWidth&&(s.lineWidth=o.render.lineWidth,s.strokeStyle=o.render.strokeStyle,s.stroke()),s.fill())}s.globalAlpha=1}},i.bodyWireframes=function(e,t,n){var i,o,r,a,s,l=n,c=e.options.showInternalEdges;for(l.beginPath(),r=0;r<t.length;r++)if((i=t[r]).render.visible)for(s=i.parts.length>1?1:0;s<i.parts.length;s++){for(o=i.parts[s],l.moveTo(o.vertices[0].x,o.vertices[0].y),a=1;a<o.vertices.length;a++)!o.vertices[a-1].isInternal||c?l.lineTo(o.vertices[a].x,o.vertices[a].y):l.moveTo(o.vertices[a].x,o.vertices[a].y),o.vertices[a].isInternal&&!c&&l.moveTo(o.vertices[(a+1)%o.vertices.length].x,o.vertices[(a+1)%o.vertices.length].y);l.lineTo(o.vertices[0].x,o.vertices[0].y)}l.lineWidth=1,l.strokeStyle="#bbb",l.stroke()},i.bodyConvexHulls=function(e,t,n){var i,o,r,a=n;for(a.beginPath(),o=0;o<t.length;o++)if((i=t[o]).render.visible&&1!==i.parts.length){for(a.moveTo(i.vertices[0].x,i.vertices[0].y),r=1;r<i.vertices.length;r++)a.lineTo(i.vertices[r].x,i.vertices[r].y);a.lineTo(i.vertices[0].x,i.vertices[0].y)}a.lineWidth=1,a.strokeStyle="rgba(255,255,255,0.2)",a.stroke()},i.vertexNumbers=function(e,t,n){var i,o,r,a=n;for(i=0;i<t.length;i++){var s=t[i].parts;for(r=s.length>1?1:0;r<s.length;r++){var l=s[r];for(o=0;o<l.vertices.length;o++)a.fillStyle="rgba(255,255,255,0.2)",a.fillText(i+"_"+o,l.position.x+.8*(l.vertices[o].x-l.position.x),l.position.y+.8*(l.vertices[o].y-l.position.y))}}},i.mousePosition=function(e,t,n){var i=n;i.fillStyle="rgba(255,255,255,0.8)",i.fillText(t.position.x+"  "+t.position.y,t.position.x+5,t.position.y-5)},i.bodyBounds=function(e,t,n){var i=n,o=(e.engine,e.options);i.beginPath();for(var r=0;r<t.length;r++){if(t[r].render.visible)for(var a=t[r].parts,s=a.length>1?1:0;s<a.length;s++){var l=a[s];i.rect(l.bounds.min.x,l.bounds.min.y,l.bounds.max.x-l.bounds.min.x,l.bounds.max.y-l.bounds.min.y)}}o.wireframes?i.strokeStyle="rgba(255,255,255,0.08)":i.strokeStyle="rgba(0,0,0,0.1)",i.lineWidth=1,i.stroke()},i.bodyAxes=function(e,t,n){var i,o,r,a,s=n,l=(e.engine,e.options);for(s.beginPath(),o=0;o<t.length;o++){var c=t[o],u=c.parts;if(c.render.visible)if(l.showAxes)for(r=u.length>1?1:0;r<u.length;r++)for(i=u[r],a=0;a<i.axes.length;a++){var d=i.axes[a];s.moveTo(i.position.x,i.position.y),s.lineTo(i.position.x+20*d.x,i.position.y+20*d.y)}else for(r=u.length>1?1:0;r<u.length;r++)for(i=u[r],a=0;a<i.axes.length;a++)s.moveTo(i.position.x,i.position.y),s.lineTo((i.vertices[0].x+i.vertices[i.vertices.length-1].x)/2,(i.vertices[0].y+i.vertices[i.vertices.length-1].y)/2)}l.wireframes?(s.strokeStyle="indianred",s.lineWidth=1):(s.strokeStyle="rgba(255, 255, 255, 0.4)",s.globalCompositeOperation="overlay",s.lineWidth=2),s.stroke(),s.globalCompositeOperation="source-over"},i.bodyPositions=function(e,t,n){var i,o,r,a,s=n,l=(e.engine,e.options);for(s.beginPath(),r=0;r<t.length;r++)if((i=t[r]).render.visible)for(a=0;a<i.parts.length;a++)o=i.parts[a],s.arc(o.position.x,o.position.y,3,0,2*Math.PI,!1),s.closePath();for(l.wireframes?s.fillStyle="indianred":s.fillStyle="rgba(0,0,0,0.5)",s.fill(),s.beginPath(),r=0;r<t.length;r++)(i=t[r]).render.visible&&(s.arc(i.positionPrev.x,i.positionPrev.y,2,0,2*Math.PI,!1),s.closePath());s.fillStyle="rgba(255,165,0,0.8)",s.fill()},i.bodyVelocity=function(e,t,n){var i=n;i.beginPath();for(var r=0;r<t.length;r++){var a=t[r];if(a.render.visible){var s=o.getVelocity(a);i.moveTo(a.position.x,a.position.y),i.lineTo(a.position.x+s.x,a.position.y+s.y)}}i.lineWidth=3,i.strokeStyle="cornflowerblue",i.stroke()},i.bodyIds=function(e,t,n){var i,o,r=n;for(i=0;i<t.length;i++)if(t[i].render.visible){var a=t[i].parts;for(o=a.length>1?1:0;o<a.length;o++){var s=a[o];r.font="12px Arial",r.fillStyle="rgba(255,255,255,0.5)",r.fillText(s.id,s.position.x+10,s.position.y-10)}}},i.collisions=function(e,t,n){var i,o,r,a,s=n,l=e.options;for(s.beginPath(),r=0;r<t.length;r++)if((i=t[r]).isActive)for(o=i.collision,a=0;a<i.activeContacts.length;a++){var c=i.activeContacts[a].vertex;s.rect(c.x-1.5,c.y-1.5,3.5,3.5)}for(l.wireframes?s.fillStyle="rgba(255,255,255,0.7)":s.fillStyle="orange",s.fill(),s.beginPath(),r=0;r<t.length;r++)if((i=t[r]).isActive&&(o=i.collision,i.activeContacts.length>0)){var u=i.activeContacts[0].vertex.x,d=i.activeContacts[0].vertex.y;2===i.activeContacts.length&&(u=(i.activeContacts[0].vertex.x+i.activeContacts[1].vertex.x)/2,d=(i.activeContacts[0].vertex.y+i.activeContacts[1].vertex.y)/2),o.bodyB===o.supports[0].body||!0===o.bodyA.isStatic?s.moveTo(u-8*o.normal.x,d-8*o.normal.y):s.moveTo(u+8*o.normal.x,d+8*o.normal.y),s.lineTo(u,d)}l.wireframes?s.strokeStyle="rgba(255,165,0,0.7)":s.strokeStyle="orange",s.lineWidth=1,s.stroke()},i.separations=function(e,t,n){var i,o,r,a,s,l=n,c=e.options;for(l.beginPath(),s=0;s<t.length;s++)if((i=t[s]).isActive){r=(o=i.collision).bodyA;var u=1;(a=o.bodyB).isStatic||r.isStatic||(u=.5),a.isStatic&&(u=0),l.moveTo(a.position.x,a.position.y),l.lineTo(a.position.x-o.penetration.x*u,a.position.y-o.penetration.y*u),u=1,a.isStatic||r.isStatic||(u=.5),r.isStatic&&(u=0),l.moveTo(r.position.x,r.position.y),l.lineTo(r.position.x+o.penetration.x*u,r.position.y+o.penetration.y*u)}c.wireframes?l.strokeStyle="rgba(255,165,0,0.5)":l.strokeStyle="orange",l.stroke()},i.inspector=function(e,t){e.engine;var n,i=e.selected,o=e.render,r=o.options;if(r.hasBounds){var a=o.bounds.max.x-o.bounds.min.x,s=o.bounds.max.y-o.bounds.min.y,l=a/o.options.width,c=s/o.options.height;t.scale(1/l,1/c),t.translate(-o.bounds.min.x,-o.bounds.min.y)}for(var u=0;u<i.length;u++){var d=i[u].data;switch(t.translate(.5,.5),t.lineWidth=1,t.strokeStyle="rgba(255,165,0,0.9)",t.setLineDash([1,2]),d.type){case"body":n=d.bounds,t.beginPath(),t.rect(Math.floor(n.min.x-3),Math.floor(n.min.y-3),Math.floor(n.max.x-n.min.x+6),Math.floor(n.max.y-n.min.y+6)),t.closePath(),t.stroke();break;case"constraint":var p=d.pointA;d.bodyA&&(p=d.pointB),t.beginPath(),t.arc(p.x,p.y,10,0,2*Math.PI),t.closePath(),t.stroke()}t.setLineDash([]),t.translate(-.5,-.5)}null!==e.selectStart&&(t.translate(.5,.5),t.lineWidth=1,t.strokeStyle="rgba(255,165,0,0.6)",t.fillStyle="rgba(255,165,0,0.1)",n=e.selectBounds,t.beginPath(),t.rect(Math.floor(n.min.x),Math.floor(n.min.y),Math.floor(n.max.x-n.min.x),Math.floor(n.max.y-n.min.y)),t.closePath(),t.stroke(),t.fill(),t.translate(-.5,-.5)),r.hasBounds&&t.setTransform(1,0,0,1,0,0)};var n=function(e,t){var n=e.engine,o=e.timing,r=o.historySize,a=n.timing.timestamp;o.delta=t-o.lastTime||i._goodDelta,o.lastTime=t,o.timestampElapsed=a-o.lastTimestamp||0,o.lastTimestamp=a,o.deltaHistory.unshift(o.delta),o.deltaHistory.length=Math.min(o.deltaHistory.length,r),o.engineDeltaHistory.unshift(n.timing.lastDelta),o.engineDeltaHistory.length=Math.min(o.engineDeltaHistory.length,r),o.timestampElapsedHistory.unshift(o.timestampElapsed),o.timestampElapsedHistory.length=Math.min(o.timestampElapsedHistory.length,r),o.engineElapsedHistory.unshift(n.timing.lastElapsed),o.engineElapsedHistory.length=Math.min(o.engineElapsedHistory.length,r),o.elapsedHistory.unshift(o.lastElapsed),o.elapsedHistory.length=Math.min(o.elapsedHistory.length,r)},d=function(e){for(var t=0,n=0;n<e.length;n+=1)t+=e[n];return t/e.length||0},p=function(e,t){var n=document.createElement("canvas");return n.width=e,n.height=t,n.oncontextmenu=function(){return!1},n.onselectstart=function(){return!1},n},f=function(e){var t=e.getContext("2d");return(window.devicePixelRatio||1)/(t.webkitBackingStorePixelRatio||t.mozBackingStorePixelRatio||t.msBackingStorePixelRatio||t.oBackingStorePixelRatio||t.backingStorePixelRatio||1)},v=function(e,t){var n=e.textures[t];return n||((n=e.textures[t]=new Image).src=t,n)},y=function(e,t){var n=t;/(jpg|gif|png)$/.test(t)&&(n="url("+t+")"),e.canvas.style.background=n,e.canvas.style.backgroundSize="contain",e.currentBackground=t}}()},function(e,t,n){var i={};e.exports=i;var o=n(5),r=n(17),a=n(0);!function(){var e,t,n;("undefined"!=typeof window&&(e=window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.msRequestAnimationFrame,t=window.cancelAnimationFrame||window.mozCancelAnimationFrame||window.webkitCancelAnimationFrame||window.msCancelAnimationFrame),e)||(e=function(e){n=setTimeout((function(){e(a.now())}),1e3/60)},t=function(){clearTimeout(n)});i.create=function(e){var t=a.extend({fps:60,deltaSampleSize:60,counterTimestamp:0,frameCounter:0,deltaHistory:[],timePrev:null,frameRequestId:null,isFixed:!1,enabled:!0},e);return t.delta=t.delta||1e3/t.fps,t.deltaMin=t.deltaMin||1e3/t.fps,t.deltaMax=t.deltaMax||1e3/(.5*t.fps),t.fps=1e3/t.delta,t},i.run=function(t,n){return void 0!==t.positionIterations&&(n=t,t=i.create()),function o(r){t.frameRequestId=e(o),r&&t.enabled&&i.tick(t,n,r)}(),t},i.tick=function(e,t,n){var i,a=t.timing;e.isFixed?i=e.delta:(i=n-e.timePrev||e.delta,e.timePrev=n,e.deltaHistory.push(i),e.deltaHistory=e.deltaHistory.slice(-e.deltaSampleSize),i=(i=(i=Math.min.apply(null,e.deltaHistory))<e.deltaMin?e.deltaMin:i)>e.deltaMax?e.deltaMax:i,e.delta=i);var s={timestamp:a.timestamp};o.trigger(e,"beforeTick",s),e.frameCounter+=1,n-e.counterTimestamp>=1e3&&(e.fps=e.frameCounter*((n-e.counterTimestamp)/1e3),e.counterTimestamp=n,e.frameCounter=0),o.trigger(e,"tick",s),o.trigger(e,"beforeUpdate",s),r.update(t,i),o.trigger(e,"afterUpdate",s),o.trigger(e,"afterTick",s)},i.stop=function(e){t(e.frameRequestId)},i.start=function(e,t){i.run(e,t)}}()},function(e,t,n){var i={};e.exports=i;var o=n(8),r=n(0).deprecated;i.collides=function(e,t){return o.collides(e,t)},r(i,"collides","SAT.collides ➤ replaced by Collision.collides")},function(e,t,n){var i={};e.exports=i;n(1);var o=n(0);i.pathToVertices=function(e,t){"undefined"==typeof window||"SVGPathSeg"in window||o.warn("Svg.pathToVertices: SVGPathSeg not defined, a polyfill is required.");var n,r,a,s,l,c,u,d,p,f,v,y=[],m=0,g=0,x=0;t=t||15;var h=function(e,t,n){var i=n%2==1&&n>1;if(!p||e!=p.x||t!=p.y){p&&i?(f=p.x,v=p.y):(f=0,v=0);var o={x:f+e,y:v+t};!i&&p||(p=o),y.push(o),g=f+e,x=v+t}},b=function(e){var t=e.pathSegTypeAsLetter.toUpperCase();if("Z"!==t){switch(t){case"M":case"L":case"T":case"C":case"S":case"Q":g=e.x,x=e.y;break;case"H":g=e.x;break;case"V":x=e.y}h(g,x,e.pathSegType)}};for(i._svgPathToAbsolute(e),a=e.getTotalLength(),c=[],n=0;n<e.pathSegList.numberOfItems;n+=1)c.push(e.pathSegList.getItem(n));for(u=c.concat();m<a;){if((l=c[e.getPathSegAtLength(m)])!=d){for(;u.length&&u[0]!=l;)b(u.shift());d=l}switch(l.pathSegTypeAsLetter.toUpperCase()){case"C":case"T":case"S":case"Q":case"A":s=e.getPointAtLength(m),h(s.x,s.y,0)}m+=t}for(n=0,r=u.length;n<r;++n)b(u[n]);return y},i._svgPathToAbsolute=function(e){for(var t,n,i,o,r,a,s=e.pathSegList,l=0,c=0,u=s.numberOfItems,d=0;d<u;++d){var p=s.getItem(d),f=p.pathSegTypeAsLetter;if(/[MLHVCSQTA]/.test(f))"x"in p&&(l=p.x),"y"in p&&(c=p.y);else switch("x1"in p&&(i=l+p.x1),"x2"in p&&(r=l+p.x2),"y1"in p&&(o=c+p.y1),"y2"in p&&(a=c+p.y2),"x"in p&&(l+=p.x),"y"in p&&(c+=p.y),f){case"m":s.replaceItem(e.createSVGPathSegMovetoAbs(l,c),d);break;case"l":s.replaceItem(e.createSVGPathSegLinetoAbs(l,c),d);break;case"h":s.replaceItem(e.createSVGPathSegLinetoHorizontalAbs(l),d);break;case"v":s.replaceItem(e.createSVGPathSegLinetoVerticalAbs(c),d);break;case"c":s.replaceItem(e.createSVGPathSegCurvetoCubicAbs(l,c,i,o,r,a),d);break;case"s":s.replaceItem(e.createSVGPathSegCurvetoCubicSmoothAbs(l,c,r,a),d);break;case"q":s.replaceItem(e.createSVGPathSegCurvetoQuadraticAbs(l,c,i,o),d);break;case"t":s.replaceItem(e.createSVGPathSegCurvetoQuadraticSmoothAbs(l,c),d);break;case"a":s.replaceItem(e.createSVGPathSegArcAbs(l,c,p.r1,p.r2,p.angle,p.largeArcFlag,p.sweepFlag),d);break;case"z":case"Z":l=t,c=n}"M"!=f&&"m"!=f||(t=l,n=c)}}},function(e,t,n){var i={};e.exports=i;var o=n(6);n(0);i.create=o.create,i.add=o.add,i.remove=o.remove,i.clear=o.clear,i.addComposite=o.addComposite,i.addBody=o.addBody,i.addConstraint=o.addConstraint}])}));
+</script>
+<style>
+  .viz-root, :root {
+    color-scheme: light;
+    --surface-1: #FFFFFF;
+    --page: #E9EDF1;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --muted: #64748B;
+    --grid: #E2E8F0;
+    --baseline: #CBD5E1;
+    --border: #E2E8F0;
+    --accent: #0D9488;
+    --accent-dark: #0F766E;
+    --accent-soft: #D5F1EC;
+    --amber: #D97706;
+    --blue: #2563EB;
+    --accent2: #64748B;
+    --accent2-light: #94A3B8;
+    --accent2-soft: #F1F5F9;
+    --series-1: #0D9488;
+    --series-2: #D97706;
+    --series-3: #2563EB;
+    --sky-top: #CFE6F8;
+    --sky-bot: #EEF7FD;
+    --ground: #A9C787;
+    --ground-line: #6F9A50;
+    --robot-body: #0D9488;
+    --robot-leg: #52514e;
+    --robot-foot: #D97706;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])),
+    :root:where(:not([data-theme="light"])) .viz-root,
+    body.viz-root {
+      color-scheme: dark;
+      --surface-1: #141B26;
+      --page: #0B1017;
+      --text-primary: #F1F5F9;
+      --text-secondary: #A7B4C2;
+      --muted: #8494A6;
+      --grid: #24303E;
+      --baseline: #36455A;
+      --border: #24303E;
+      --accent: #14B8A6;
+      --accent-dark: #2DD4BF;
+      --accent-soft: #123B36;
+      --amber: #F59E0B;
+      --blue: #60A5FA;
+      --accent2: #8494A6;
+      --accent2-light: #A9B7C6;
+      --accent2-soft: #1B2530;
+      --series-1: #2DD4BF;
+      --series-2: #F59E0B;
+      --series-3: #60A5FA;
+      --sky-top: #101a26;
+      --sky-bot: #141B26;
+      --ground: #23301c;
+      --ground-line: #46603a;
+      --robot-body: #2DD4BF;
+      --robot-leg: #A7B4C2;
+      --robot-foot: #F59E0B;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: var(--page);
+    color: var(--text-primary);
+    padding: 16px;
+  }
+  h1 { font-size: 19px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 3px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+  .logo { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; background: linear-gradient(135deg, #0D9488, #34D399); font-size: 18px; margin-right: 9px; box-shadow: 0 1px 3px rgba(13,148,136,0.35); }
+  .sub { font-size: 12.5px; color: var(--text-secondary); margin-bottom: 2px; }
+  .layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 14px;
+    grid-template-areas: "head head" "sim ctl" "tiles ctl" "chart ctl" "log ctl";
+    align-items: start; max-width: 1280px; margin: 0 auto;
+  }
+  .full { grid-column: 1 / -1; }
+  .layout > .full:first-child { grid-area: head; }
+  #simCard { grid-area: sim; }
+  .card.controls { grid-area: ctl; }
+  .full.tiles { grid-area: tiles; }
+  #chartCard { grid-area: chart; }
+  #logCard { grid-area: log; }
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.05);
+  }
+  .sec { background: var(--page); border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+  .sec-t { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+  canvas { display: block; width: 100%; height: auto; border-radius: 6px; }
+  .controls h2, .card h2 { font-size: 13px; font-weight: 700; margin-bottom: 10px; color: var(--text-primary); }
+  .ctl { margin-bottom: 10px; }
+  .ctl label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 3px; }
+  .ctl label b { color: var(--text-primary); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .ctl input[type=range] { width: 100%; accent-color: var(--accent); }
+  .viewtabs { display: flex; gap: 6px; margin-bottom: 8px; }
+  .viewtabs .vt {
+    font-size: 12px; padding: 5px 12px; border-radius: 16px;
+    border: 1px solid var(--border); background: var(--surface-1); color: var(--text-secondary);
+  }
+  .viewtabs .vt.active { background: var(--accent-soft); color: var(--accent-dark); border-color: var(--accent); font-weight: 600; }
+  .dimgrid { display: grid; grid-template-columns: auto 1fr auto 1fr; gap: 5px 6px; align-items: center; font-size: 11.5px; color: var(--text-secondary); }
+  .dimgrid input { width: 100%; min-width: 52px; font: inherit; padding: 3px 5px; border: 1px solid var(--border); border-radius: 6px; background: var(--page); color: var(--text-primary); }
+  .btnrow { display: flex; gap: 8px; margin: 12px 0 8px; flex-wrap: wrap; }
+  button {
+    font: inherit; font-size: 13px; font-weight: 600;
+    padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface-1); color: var(--text-primary); cursor: pointer;
+  }
+  button.primary { background: var(--accent-dark); border-color: transparent; color: #fff; }
+  button.primary:hover { background: var(--accent); }
+  button:disabled { opacity: 0.45; cursor: default; }
+  .chk { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-secondary); margin-top: 6px; }
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .tile { position: relative; background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px 18px; box-shadow: 0 1px 2px rgba(15,23,42,0.04); }
+  .tile .k { font-size: 11.5px; color: var(--muted); margin-bottom: 3px; }
+  .tile .v { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 23px; font-weight: 700; letter-spacing: -0.5px; }
+  .tile .u { font-family: "Inter", "Noto Sans KR", sans-serif; font-size: 11px; color: var(--muted); font-weight: 400; margin-left: 3px; }
+  .tile.key .v { color: var(--accent-dark); }
+  .tile::after { content:''; position: absolute; left: 13px; bottom: 9px; width: 22px; height: 3px; border-radius: 2px; background: var(--baseline); }
+  .tiles .tile:nth-child(3n+1)::after { background: var(--accent); }
+  .tiles .tile:nth-child(3n+2)::after { background: var(--amber); }
+  .tiles .tile:nth-child(3n)::after { background: var(--blue); }
+  .chartwrap { position: relative; }
+  #tooltip {
+    position: absolute; pointer-events: none; display: none;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 6px;
+    padding: 5px 8px; font-size: 12px; color: var(--text-primary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12); white-space: nowrap; z-index: 5;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { text-align: right; color: var(--muted); font-weight: 600; padding: 5px 8px; border-bottom: 1px solid var(--baseline); }
+  th:first-child, td:first-child { text-align: left; }
+  td { text-align: right; padding: 5px 8px; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; }
+  .note { font-size: 11.5px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  .phase-badge { display:inline-block; font-size: 11.5px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--accent2-soft); color: var(--text-secondary); border: 1px solid var(--border); margin-left: 8px; vertical-align: middle;}
+  .phase-badge::before { content:'●'; color: var(--accent); font-size: 8px; margin-right: 5px; vertical-align: 1.5px; }
+  /* 헤더: 흰 카드 + 로고마크 + 상태 뱃지 */
+  .hero {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 18px 12px;
+    box-shadow: 0 1px 2px rgba(15,23,42,0.05);
+  }
+  .hero .sub { color: var(--text-secondary); margin-left: 43px; }
+  .controls .sec { background: var(--accent2-soft); border: 1px solid var(--border); }
+  .controls .sec-t::before { content:''; display: inline-block; width: 8px; height: 8px; border-radius: 2.5px; background: var(--accent); margin-right: 7px; }
+  #scenBox .sec-t::before { background: var(--blue); }
+  #physBox .sec-t::before { background: var(--amber); }
+  .controls .dimgrid input, .controls .ctl label b { font-family: "JetBrains Mono", ui-monospace, monospace; }
+  .controls .dimgrid input { background: var(--surface-1); border: 1px solid var(--baseline); }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; grid-template-areas: "head" "sim" "tiles" "chart" "ctl" "log"; }
+    .tiles { grid-template-columns: repeat(3, 1fr); }
+  }
+  /* 전체 화면: 같은 3분할 배치를 화면 전체 폭으로 확장 */
+  body.fs .layout { max-width: none; }
+  @media (min-width: 1500px) { body.fs .tiles { grid-template-columns: repeat(5, 1fr); } }
+</style>
+</head>
+<body class="viz-root">
+<div class="layout">
+  <div class="full hero">
+    <h1><span class="logo">🦗</span>메뚜기형 점프 로봇 시뮬레이터 <span class="phase-badge" id="phaseBadge">대기</span> <span style="font-size:11px; font-weight:500; color:var(--muted); border:1px solid var(--border); border-radius:10px; padding:2px 8px; vertical-align:middle;">v36 · 앱판</span></h1>
+    <div class="sub">실제 메뚜기의 신체 치수와 저장 에너지를 기반으로 점프 성능을 분석합니다.</div>
+  </div>
+
+  <div class="card" id="simCard">
+    <div class="viewtabs">
+      <button id="btnViewSide" class="vt active">옆에서 보기</button>
+      <button id="btnViewIso" class="vt">위에서 45° 내려보기 (3D)</button>
+      <span id="zoomHint" style="margin-left:auto; align-self:center; font-size:11.5px; color:var(--muted);">🖱 마우스 휠: 확대/축소 · 더블클릭: 원래대로</span>
+      <button class="vt" id="btnFull" title="전체 화면 (Esc로 나가기)">⛶ 전체 화면</button>
+    </div>
+    <div style="position:relative;">
+      <canvas id="world" width="980" height="430"></canvas>
+      <button id="btnResetTop" style="position:absolute; right:150px; bottom:12px; padding:10px 16px; font-size:13px; box-shadow:0 2px 8px rgba(0,0,0,0.12);">리셋 (R)</button>
+      <button class="primary" id="btnJumpTop" style="position:absolute; right:12px; bottom:12px; padding:10px 22px; font-size:14px; box-shadow:0 2px 8px rgba(0,0,0,0.18);">점프 (스페이스)</button>
+      <div id="hud" style="display:none; position:absolute; left:12px; top:10px; background:var(--surface-1); border:1px solid var(--border); border-radius:10px; padding:8px 16px; font-size:12.5px; color:var(--text-secondary); box-shadow:0 2px 8px rgba(0,0,0,0.12); line-height:1.9;"></div>
+    </div>
+  </div>
+
+  <div class="card controls">
+    <h2>실험 변수</h2>
+    <div class="sec" id="insectBox">
+      <div class="sec-t">실제 메뚜기 실측값</div>
+      <div class="dimgrid">
+        <span>몸길이(mm)</span><input type="number" id="n_iBL" min="10" max="80" step="1" value="33">
+        <span>몸무게(g)</span><input type="number" id="n_iM" min="0.2" max="8" step="0.1" value="0.4">
+        <span>허벅지(mm)</span><input type="number" id="n_irF" min="4" max="40" step="0.5" value="16">
+        <span>종아리(mm)</span><input type="number" id="n_irT" min="4" max="40" step="0.5" value="15">
+        <span>저장 에너지(mJ)</span><input type="number" id="n_iE" min="1" max="80" step="1" value="8">
+        <span></span>
+      </div>
+    </div>
+    <div class="sec" id="scenBox">
+      <div class="sec-t">서식지 시나리오</div>
+      <div class="viewtabs" style="margin-bottom:0; flex-wrap:wrap;">
+        <button class="vt sc active" data-sc="none">평가 없음</button>
+        <button class="vt sc" data-sc="grass">풀밭</button>
+        <button class="vt sc" data-sc="sand">모래밭</button>
+        <button class="vt sc" data-sc="predator">포식 회피</button>
+        <button class="vt sc" data-sc="economy">에너지 절약</button>
+      </div>
+    </div>
+    <div class="sec" id="physBox">
+      <div class="sec-t">물리 조건</div>
+      <div class="ctl"><label>중력 <b id="v_g">1.0 g</b></label><input type="range" id="s_g" min="0.2" max="2" step="0.1" value="1"></div>
+      <div class="ctl"><label>점프 각도(뒤로 미는 각) <b id="v_ang">15°</b></label><input type="range" id="s_ang" min="0" max="35" step="1" value="15"></div>
+    <div class="ctl" style="display:none;"><label>몸체 질량 <b id="v_m">2.0 kg</b></label><input type="range" id="s_m" min="0.5" max="5" step="0.1" value="2"></div>
+    <div class="ctl" style="display:none; border:1px solid var(--border); border-radius:8px; padding:8px;">
+      <label style="margin-bottom:6px;"><span>다리 치수 (cm, 0~100)</span></label>
+      <div class="dimgrid">
+        <span>뒤 허벅지</span><input type="number" id="n_rF" min="0" max="100" step="1" value="35">
+        <span>뒤 종아리</span><input type="number" id="n_rT" min="0" max="100" step="1" value="45">
+        <span>중간 허벅지</span><input type="number" id="n_mF" min="0" max="100" step="1" value="20">
+        <span>중간 종아리</span><input type="number" id="n_mT" min="0" max="100" step="1" value="25">
+        <span>앞 허벅지</span><input type="number" id="n_fF" min="0" max="100" step="1" value="18">
+        <span>앞 종아리</span><input type="number" id="n_fT" min="0" max="100" step="1" value="22">
+        <span>발바닥 지름</span><input type="number" id="n_foot" min="2" max="20" step="0.5" value="10">
+        <span></span>
+      </div>
+    </div>
+    <div class="ctl" style="display:none; border:1px solid var(--border); border-radius:8px; padding:8px;">
+      <label style="margin-bottom:6px;"><span>몸통 치수 (cm, 둥근 직육면체)</span></label>
+      <div class="dimgrid">
+        <span>가로(길이)</span><input type="number" id="n_bW" min="30" max="120" step="1" value="62">
+        <span>높이</span><input type="number" id="n_bH" min="10" max="50" step="1" value="26">
+        <span>세로(폭)</span><input type="number" id="n_bD" min="5" max="50" step="1" value="20">
+        <span></span>
+      </div>
+    </div>
+    <div class="ctl" style="display:none;"><label>점프 스프링 강성 k <b id="v_k">110 N·m/rad</b></label><input type="range" id="s_k" min="30" max="250" step="5" value="110"></div>
+    <div class="ctl" style="display:none;"><label>최대 관절 토크 <b id="v_tau">30 N·m</b></label><input type="range" id="s_tau" min="5" max="80" step="1" value="30"></div>
+      <div class="ctl"><label>지면 마찰 계수 <b id="v_fr">1.0</b></label><input type="range" id="s_fr" min="0" max="3" step="0.05" value="1"></div>
+    </div>
+    <div class="btnrow">
+      <button class="primary" id="btnJump">점프 실행</button>
+      <button id="btnReset">리셋</button>
+    </div>
+    <div class="chk"><input type="checkbox" id="chkSlow"><label for="chkSlow">슬로모션 (¼ 배속)</label></div>
+    <div class="chk"><input type="checkbox" id="chkTrace" checked><label for="chkTrace">무게중심 궤적 표시</label></div>
+  </div>
+
+  <div class="full tiles">
+    <div class="tile key"><div class="k">최고 점프 높이</div><div class="v" id="t_h">–<span class="u">m</span></div></div>
+    <div class="tile key"><div class="k">도약 거리</div><div class="v" id="t_d">–<span class="u">m</span></div></div>
+    <div class="tile"><div class="k">체공 시간</div><div class="v" id="t_air">–<span class="u">s</span></div></div>
+    <div class="tile"><div class="k">이륙 속도</div><div class="v" id="t_v">–<span class="u">m/s</span></div></div>
+    <div class="tile"><div class="k">이륙 각도</div><div class="v" id="t_th">–<span class="u">°</span></div></div>
+    <div class="tile"><div class="k">에너지 효율 (운동E/입력E)</div><div class="v" id="t_eff">–<span class="u">%</span></div></div>
+    <div class="tile"><div class="k">최대 지면 반력</div><div class="v" id="t_F">–<span class="u">N</span></div></div>
+    <div class="tile"><div class="k">접지 압력 (반력÷발바닥 면적)</div><div class="v" id="t_P">–<span class="u">N/cm²</span></div></div>
+    <div class="tile"><div class="k">적합도 점수 (서식지 시나리오)</div><div class="v" id="t_fit">–<span class="u">/100</span></div></div>
+  </div>
+
+  <div class="full card" id="chartCard">
+    <h2>무게중심 높이–시간 그래프 <span style="font-weight:400; color:var(--muted); font-size:11.5px;">(청록색: 최근 점프, 회색: 이전 점프)</span></h2>
+    <div class="chartwrap">
+      <canvas id="chart" width="1220" height="240"></canvas>
+      <div id="tooltip"></div>
+    </div>
+  </div>
+
+  <div class="full card" id="logCard">
+    <h2>실험 기록</h2>
+    <table id="logTable">
+      <thead><tr>
+        <th>#</th><th>방식</th><th>중력(g)</th><th>질량(kg)</th><th>뒷다리(cm)</th><th>강성(N·m/rad)</th><th>토크(N·m)</th><th>각도(°)</th><th>마찰</th>
+        <th>높이(m)</th><th>거리(m)</th><th>체공(s)</th><th>이륙속도(m/s)</th><th>효율(%)</th><th>압력(N/cm²)</th><th>적합도</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="btnrow"><button id="btnCsv">CSV로 저장</button><button id="btnClear">기록 지우기</button></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const { Engine, Bodies, Body, Composite, Constraint } = Matter;
+
+// ---------- 단위 변환 ----------
+let PPM = 70;                   // pixels per meter (물리 해상도 — 작은 실물 모형은 500으로 올려 정밀하게)
+const FPS = 60;
+let SUBSTEPS = 16;
+let DT_MS = 1000 / FPS / SUBSTEPS;            // substep (ms)
+let DT_S = DT_MS / 1000;
+const G_EARTH = 9.81;
+// Matter torque unit: kg·px²/ms² ; SI: kg·m²/s² → ×PPM²×1e-6
+let TQ = PPM * PPM * 1e-6;
+function setScale(ppm) {
+  PPM = ppm; TQ = PPM * PPM * 1e-6;
+  // 작은 실물 모형은 시간 해상도도 올려 관절 제어를 안정화.
+  // 실제 메뚜기 모드도 방출이 수 ms로 매우 빨라 시간 해상도를 올림 (에너지 손실 방지)
+  SUBSTEPS = ppm > 200 ? 96 : (params.mode === 'insect' ? 64 : 16);
+  DT_MS = 1000 / FPS / SUBSTEPS;
+  DT_S = DT_MS / 1000;
+}
+
+// ---------- 엔진/월드 ----------
+const canvas = document.getElementById('world');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const GROUND_Y = H - 60;
+
+let engine, robot, phase = 'idle', simT = 0, phaseT = 0;
+let trace = [], series = [];      // series: [{pts:[{t,x,h}], live}]
+let jump = null;                  // 현재 점프 측정값
+let trialNum = 0;
+const trials = [];
+
+const params = {
+  mode: 'insect', // v28: '실제 메뚜기' 단일 모드 (motor/catapult/physical 코드는 백업 문서 참고)
+  g: 1, mass: 2, k: 110, tauMax: 30, jumpAng: 15, friction: 1,
+  nBands: 2, pullCm: 8, // 실물 모형: 고무줄 개수, 당김 길이(cm)
+  // 실제 메뚜기 모드: 실측값 입력 (몸길이 m, 몸무게 kg, 다리 m, 저장 에너지 J)
+  iBL: 0.033, iMass: 0.0004, irF: 0.016, irT: 0.015, iE: 0.008, // 벼메뚜기(성체 30~38mm) 기준
+  scenario: 'none', // 서식지 시나리오: none | grass | sand | predator | economy
+  // 다리 허벅지(F)·종아리(T) 길이 (m, 내부 단위) — 입력은 cm
+  rF: 0.35, rT: 0.45, fF: 0.18, fT: 0.22, mF: 0.20, mT: 0.25,
+  // 몸통(둥근 직육면체) 치수 (m): 가로(길이)·높이·세로(폭)
+  bW: 0.62, bH: 0.26, bD: 0.20,
+  footD: 0.10, // 발바닥 지름 (m)
+};
+
+function gravityY() { return params.g * G_EARTH * PPM / 1e6 / 0.001; } // engine.gravity.y (scale 0.001, ms²)
+
+function makeEngine() {
+  engine = Engine.create();
+  engine.gravity.y = gravityY();
+  engine.gravity.scale = 0.001;
+  const ground = Bodies.rectangle(W * 15, GROUND_Y + 30, W * 40, 60, {
+    isStatic: true, friction: params.friction, restitution: 0, label: 'ground',
+  });
+  Composite.add(engine.world, ground);
+  robot = buildRobot();
+  Composite.add(engine.world, robot.all);
+}
+
+// ---------- 로봇 (6족: 뒷다리·가운뎃다리·앞다리) ----------
+const D2R = Math.PI / 180;
+const TUNE = {
+  extGain: 2.0, crouchTilt: 0.4, cockFx: 0.70, cockTy: 0.40, levCock: 1.6, levOver: 0.35,
+  // 실제 메뚜기 모드 (사진·문헌으로 보정): 엎드린 자세(배가 지면에 닿음)에서
+  // 종아리를 넓적다리에 밀착 접기(insQ2, 접힘각° 후보) + 발사 초반 가운뎃·앞다리의
+  // 앞들림 기여(insMidCap/insFrontCap) → 이륙각 ~42°, 거리 ~67cm, 속도 ~2.6 m/s
+  insQ2: [-160, -157, -163, -154, -166, -150, -145, -140],
+  insMidCap: 2.8, insFrontCap: 1.8,
+  // 각도 의존 스프링 (실제 메뚜기): 무릎 토크 = 탄성체 장력 × 모멘트암.
+  // 모멘트암은 완전히 접힌 상태에서 최소, 펴질수록 증가 (반달 돌기·힘줄 기하, 문헌 5~10배).
+  // insRho = 신전 완료 시 모멘트암 ÷ 접힘 시 모멘트암. 1이면 기존 선형 스프링과 동일.
+  insRho: 10,
+  // 발톱 그립의 힘 한계: 그립 제약이 이 이상 늘어나면(과도한 힘) 미끄러져 해제.
+  // 극단 다리 비율이 요구하는 비현실적 그립력을 걸러내 — 실제 비율 부근이 최적이 되는
+  // 생물학적으로 타당한 성능 곡선을 만든다
+  insSlipPx: 5,
+  // 방출률 상한 (실제 메뚜기): 탄성체가 낼 수 있는 순간 출력의 한계 (문헌: 뒷다리 한 쌍 ~0.75-1 W).
+  // 무릎이 빨리 돌수록 낼 수 있는 토크가 P_max/ω로 줄어 — 에너지 총량은 같아도
+  // 비현실적으로 빠른 방출(가짜 고효율 경로)이 물리적으로 차단됨
+  insPmax: 1.8,
+};
+
+// 각 다리의 설정: 위치, 허벅지(L1)·종아리(L2) 길이(m), 무릎 방향, 발 위치, 추진 비중
+// 투석기 계열 모드 여부 (메뚜기식 + 실물 모형 + 실제 메뚜기)
+function isCat() { return params.mode === 'catapult' || params.mode === 'physical' || params.mode === 'insect'; }
+function legTypes() { return params.mode === 'physical' ? ['rear', 'front'] : ['rear', 'mid', 'front']; }
+
+function legConf() {
+  // 발 위치(fx)는 다리 길이에 비례해 줄여, 짧은 다리도 무리 없는 자세가 되게 함
+  const fxR = -Math.min(0.25, 0.6 * (params.rF + params.rT));
+  const fxF = Math.min(0.22, 0.55 * (params.fF + params.fT));
+  // 엉덩이(다리 부착점)는 몸통 가로 길이에 비례 (기본: 0.62m 몸통에 ±0.22m)
+  const hip = 0.355 * params.bW;
+  if (params.mode === 'physical') {
+    // 실물 모형: 나무젓가락 다리 (밀도 ~0.6 g/cm³ 기준, 한 쌍 합산 질량)
+    return {
+      rear:  { hx: -hip, L1: params.rF, L2: params.rT, bend: +1, fx: fxR, m1: 0.004, m2: 0.004, capMul: 1.0, w: 2.5 },
+      front: { hx: hip,  L1: params.fF, L2: params.fT, bend: -1, fx: fxF, m1: 0.002, m2: 0.002, capMul: 0, w: 2.2 },
+    };
+  }
+  if (params.mode === 'insect') {
+    // 실제 메뚜기 (역학적 상사 모형): 실측 비율을 검증된 로봇 스케일로 확대해 시뮬레이션.
+    // 질량 배분은 메뚜기 실측 비율(뒷다리 쌍 ~12%)을 프록시 총질량에 적용
+    // 질량 배분(실측 비율): 뒷넓적다리 쌍은 근육 때문에 무겁고(~9%), 뒷정강이 쌍은 매우 가벼움(~2%)
+    // 다리 부착점: 실제 메뚜기는 세 쌍 모두 가슴(몸 앞~중간)에 붙음 — 뒷다리 관절이 몸 중앙 근처라
+    // 무게중심이 뒷다리 위에 있고, 그래서 밀어내는 방향이 위를 향해 이륙각이 가파름
+    return {
+      // capMul: 발사 초반 가운뎃·앞다리가 몸 앞부분을 들어 올려(앞들림, 문헌의 pitch-up)
+      // 엎드린 자세에서도 이륙각을 만드는 기여를 반영
+      rear:  { hx: -0.06 * params.bW, L1: params.rF, L2: params.rT, bend: +1, fx: fxR, m1: 0.23, m2: 0.05, capMul: 1.0, w: 4.0 },
+      // 앞·가운뎃다리: 엎드린 자세에서 실제 메뚜기처럼 발을 앞뒤로 벌려 디딤 —
+      // 다리가 과하게 접히지 않아 안정 (사진: 앞발은 머리 앞, 가운뎃발은 관절 뒤)
+      mid:   { hx: 0.14 * params.bW, L1: params.mF, L2: params.mT, bend: +1, fx: -0.16 * params.bW, m1: 0.04, m2: 0.04, capMul: (TUNE.insMidCap ?? 0.4), w: 3.0 },
+      front: { hx: 0.30 * params.bW, L1: params.fF, L2: params.fT, bend: -1, fx: 0.18 * params.bW, m1: 0.03, m2: 0.03, capMul: (TUNE.insFrontCap ?? 0.25), w: 2.6 },
+    };
+  }
+  return {
+    rear:  { hx: -hip, L1: params.rF, L2: params.rT, bend: +1, fx: fxR, m1: 0.25, m2: 0.30, capMul: 1.0, w: 4.5 },
+    mid:   { hx: 0.00, L1: params.mF, L2: params.mT, bend: +1, fx: 0.00,  m1: 0.12, m2: 0.15, capMul: 0.5, w: 3.5 },
+    front: { hx: hip,  L1: params.fF, L2: params.fT, bend: -1, fx: fxF, m1: 0.10, m2: 0.12, capMul: 0.3, w: 3.0 },
+  };
+}
+
+// 크기 적응 계수: 로봇의 무게·크기에 맞춰 제어 게인을 조절 (기본 로봇 = 1)
+function gainScale() {
+  const c = legConf();
+  let M = params.mass;
+  for (const t of legTypes()) M += c[t].m1 + c[t].m2;
+  // 실제 메뚜기: 엎드린 자세라 서있는 높이가 낮지만 다리 길이는 그대로이므로
+  // 게인 기준 높이는 다리 길이 기반으로 유지 (제어 강도가 자세에 따라 널뛰지 않게)
+  const H = params.mode === 'insect' ? Math.max(standH(), 0.33 * (c.rear.L1 + c.rear.L2)) : standH();
+  return Math.min(1.5, Math.max(0.001, (M * H) / (3.1 * 0.36)));
+}
+function totalMass() {
+  const c = legConf();
+  let M = params.mass;
+  for (const t of legTypes()) M += c[t].m1 + c[t].m2;
+  return M;
+}
+// 로봇 기하: 다리 길이가 서로 달라도 실제 메뚜기처럼 몸통을 기울여 모든 발이 땅에 닿게 함
+// (뒷다리 엉덩이는 높게, 앞다리 쪽은 낮게)
+function geom() {
+  const c = legConf();
+  const eff = t => {
+    const r = (c[t].L1 + c[t].L2) * 0.88; // 무릎이 항상 굽어 있도록 여유
+    return Math.sqrt(Math.max(0.01, r * r - c[t].fx * c[t].fx));
+  };
+  if (params.mode === 'physical') {
+    // 실물 모형(사진 기준): 앞 지지대가 몸 앞쪽을 높이 받치고,
+    // 뒷다리는 완전히 접힌 채 무릎이 몸 위로 솟은 발사 대기 자세. 몸통은 앞이 들림.
+    const span = c.front.hx - c.rear.hx;
+    const Hf = eff('front');
+    const Hr = Math.max(0.015, Hf - Math.tan(24 * D2R) * span);
+    const pitch = Math.atan2(Hr - Hf, span); // 음수 = 앞(머리)이 높음
+    return { c, H: { rear: Hr, front: Hf, mid: (Hr + Hf) / 2 }, pitch };
+  }
+  if (params.mode === 'insect') {
+    // 실제 메뚜기(사진 기준): 도약 전 배가 바닥에 닿을 만큼 낮게 엎드린 자세.
+    // 몸통 아랫면이 지면에 닿는 높이로 관절선을 내림 (몸통은 수평, 뒷다리는 완전히 접혀
+    // 무릎이 등 위로 솟고 발은 몸 뒤 지면을 디딤)
+    const bOffM = Math.max(0.02, params.bH / 2 - 4 / PPM); // 몸통 중심→관절선 거리 (buildRobot과 동일)
+    const hipH = Math.max(0.03, params.bH / 2 - bOffM + 0.012); // 배가 살짝 닿는 높이 (+여유 1.2cm 프록시)
+    return { c, H: { rear: hipH, front: hipH, mid: hipH }, pitch: 0 };
+  }
+  const span = c.front.hx - c.rear.hx;
+  const MAXP = 18 * D2R; // 몸통 최대 기울기: 넘으면 뒷다리를 접어서 맞춤 (실제 메뚜기처럼)
+  let Hf = eff('front');
+  let Hr = Math.min(eff('rear'), Hf + Math.tan(MAXP) * span);
+  Hr = Math.max(Hr, Hf - Math.tan(MAXP) * span); // 뒷다리가 더 짧은 경우도 제한
+  if (c.mid) {
+    const Hm = eff('mid'), need = (Hr + Hf) / 2;
+    if (Hm < need) { const d = need - Hm; Hr -= d; Hf -= d; } // 가운뎃다리가 짧으면 전체를 낮춤
+  }
+  const pitch = Math.atan2(Hr - Hf, span); // 몸통 기울기 (양수 = 머리 쪽이 낮음)
+  return { c, H: { rear: Hr, front: Hf, mid: (Hr + Hf) / 2 }, pitch };
+}
+function standH() { const g = geom(); return g.H.mid; }
+
+// 2링크 역기구학: 엉덩이 기준 목표 발 위치(tx,ty) → 절대각 [a1, a2] (라디안)
+function ik2(L1, L2, tx, ty, bend) {
+  let D = Math.hypot(tx, ty);
+  const Dmin = Math.abs(L1 - L2) * 1.05 + 1e-6, Dmax = (L1 + L2) * 0.96;
+  const cl = Math.max(Dmin, Math.min(Dmax, D));
+  if (cl !== D && D > 1e-9) { tx *= cl / D; ty *= cl / D; D = cl; }
+  const phi = Math.atan2(ty, tx);
+  const alpha = Math.acos(Math.max(-1, Math.min(1, (L1 * L1 + D * D - L2 * L2) / (2 * L1 * D))));
+  const a1 = phi + bend * alpha;
+  const a2 = Math.atan2(ty - Math.sin(a1) * L1, tx - Math.cos(a1) * L1);
+  return [a1, a2];
+}
+
+// 서기/웅크리기/장전 자세: 발 목표 위치를 역기구학으로 푼다 (다리마다 자기 엉덩이 높이 기준)
+// 'cock'(장전)은 투석기 모드에서 뒷무릎을 최대로 접는 자세 (실제 메뚜기의 조준 자세)
+function poseAngles(type, name) {
+  const g = geom(), c = g.c[type];
+  let tx = c.fx, ty = g.H[type];
+  // 실제 메뚜기 엎드린 자세: 체중은 배가 받고 앞·가운뎃다리는 가볍게 짚음 —
+  // 목표 발 위치를 지면보다 살짝 위로 두어 다리가 땅을 계속 파고드는 떨림 방지
+  if (params.mode === 'insect' && type !== 'rear') ty = Math.max(0.02, ty - 0.028);
+  // 실물 모형·실제 메뚜기의 뒷다리: 서기=장전=완전히 접힌 자세 (사진처럼 무릎이 몸 위로 솟음)
+  if ((params.mode === 'physical' || params.mode === 'insect') && type === 'rear') {
+    return foldedPose(c.L1, c.L2, g.H.rear);
+  }
+  if (name === 'crouch' || name === 'cock') {
+    const deep = (name === 'cock' && type === 'rear');
+    tx = deep ? c.fx * TUNE.cockFx : tx;  // 장전 시 발 위치 (실제 메뚜기: 접힌 다리 발이 몸 아래·뒤에 위치)
+    ty = (deep ? TUNE.cockTy : 0.55) * g.H[type];
+    const th = TUNE.crouchTilt * params.jumpAng * D2R; // 점프 각도만큼 미리 기울이기
+    const x = tx * Math.cos(th) - ty * Math.sin(th);
+    const y = tx * Math.sin(th) + ty * Math.cos(th);
+    tx = x; ty = y;
+  }
+  return ik2(c.L1, c.L2, tx, ty, c.bend);
+}
+// 완전히 접힌 자세 풀기: 허벅지는 위·뒤로, 종아리는 접혀서 무릎에서 지면까지 내려오며
+// 발이 정확히 땅에 닿는 각도를 찾는다 (가장 접힌 해부터 탐색)
+const foldCache = new Map(); // 접힘 자세 해 캐시 (같은 치수는 재계산 안 함)
+function foldedPose(L1, L2, Hr) {
+  // 사진 기하: 허벅지는 위·뒤로 솟고(a1≈240°), 종아리는 무릎에서 앞·아래로 내려와
+  // 발이 지면에 닿음(a2 70~85°). 종아리가 수직보다 앞이어야 발사 시 발끝이 지면을 민다.
+  if (params.mode === 'insect') {
+    // 실제 메뚜기(사진 기준): 종아리가 넓적다리 아랫면에 밀착되게 접힘(접힘각 −160° 부근).
+    // 넓적다리는 뒤·위로 솟아 무릎이 등 위에, 발은 관절 바로 뒤 지면을 디딤.
+    // 연속 최적화: 발-지면 조건을 만족하는 해 중 (밀착 접힘각, 발 위치)가 목표에 가장
+    // 가까운 해를 고름 — 다리 길이가 조금씩 변해도 자세가 연속적으로 변해 실험 곡선이
+    // 매끄러움 (이산 후보 방식은 길이에 따라 자세가 뚝뚝 바뀌어 결과가 널뜀)
+    const key = L1.toFixed(4) + ',' + L2.toFixed(4) + ',' + Hr.toFixed(4);
+    const cached = foldCache.get(key);
+    if (cached) return cached;
+    let best = null;
+    const LT = L1 + L2;
+    for (let q2d = -170; q2d <= -135; q2d += 0.5) {
+      const q2 = q2d * D2R;
+      for (let a1d = 195; a1d <= 268; a1d += 0.5) {
+        const a1 = a1d * D2R, a2 = a1 + q2;
+        const err = Math.abs(L1 * Math.sin(a1) + L2 * Math.sin(a2) - Hr); // 발-지면 조건
+        if (err > 0.008) continue;
+        const footX = L1 * Math.cos(a1) + L2 * Math.cos(a2);
+        if (footX > -0.06 * LT) continue; // 발은 관절보다 뒤 (앞으로 뛰는 자세 보장)
+        const cost = err * 6 + Math.abs(q2d + 160) * 0.004 + Math.abs(footX + 0.19 * LT);
+        if (!best || cost < best.cost) best = { a1, a2, cost };
+      }
+    }
+    const res = best ? [best.a1, best.a2] : ik2(L1, L2, -0.3 * LT, Hr, +1);
+    foldCache.set(key, res);
+    return res; // 극단 조건 대비 포함
+  }
+  const scan = [76, 72, 80, 68, 84, 64, 88, 60];
+  for (const a2d of scan) {
+    const a2 = a2d * D2R;
+    const s = (Hr - L2 * Math.sin(a2)) / L1; // sin(a1) 조건: 발이 정확히 지면
+    if (Math.abs(s) > 0.999) continue;
+    const a1 = Math.PI - Math.asin(s);       // 위·뒤 방향 해 (180°~270°)
+    const q2 = a2 - a1;
+    if (q2 > -1.66 || q2 < -3.10) continue;  // 충분히 접힌 자세만 (−95°~−178°)
+    return [a1, a2];
+  }
+  // 해가 없으면(다리가 너무 짧은 극단 조건) 일반 웅크림 자세로 대체
+  return ik2(L1, L2, -0.3 * (L1 + L2), Hr, +1);
+}
+
+// 다리 폄(발사) 자세: 지정 방향으로 거의 곧게 편다
+function extAngles(type) {
+  if (params.mode === 'insect' && type === 'rear') {
+    // 접힌 무릎이 완전히 펴지며 다리가 몸 뒤로 곧게 뻗음 (사진의 도약 중: 뒤·약간 위로)
+    const a1 = 197 * D2R;
+    return [a1, a1 - 0.25]; // q2 ≈ -14° (거의 곧게)
+  }
+  if (params.mode === 'physical' && type === 'rear') {
+    // 접힌 무릎이 완전히 펴지며 다리가 몸 뒤로 곧게 뻗음 (사진의 도약 중 자세)
+    const g = geom();
+    const [a1] = foldedPose(g.c.rear.L1, g.c.rear.L2, g.H.rear);
+    return [a1, a1 - 0.25]; // q2 ≈ -14° (거의 곧게)
+  }
+  const j = params.jumpAng;
+  const dir = { rear: 92 + TUNE.extGain * j, mid: 90 + 1.4 * j, front: 88 + 1.0 * j }[type] * D2R;
+  const off = 2 * D2R * legConf()[type].bend;
+  return [dir + off, dir - off];
+}
+function poseQ(type, name) {
+  const [a1, a2] = name === 'ext' ? extAngles(type) : poseAngles(type, name);
+  return { q1: a1, q2: a2 - a1 };
+}
+function extQ(type) { return poseQ(type, 'ext'); }
+
+function absAngle(b) { return b.angle + (b.plugin.ang0 || 0); }
+
+function buildRobot() {
+  const group = Body.nextGroup(true);
+  const g = geom();
+  const conf = g.c, pitch = g.pitch;
+  const bodyW = params.bW * PPM, bodyH = params.bH * PPM;
+  const footR = Math.max(0.75, params.footD / 2 * PPM);
+  const cx = (PPM > 1000 ? 0.18 : PPM > 200 ? 0.5 : 2.2) * PPM;
+  const bOff = Math.max(0.02 * PPM, bodyH / 2 - 4); // 몸통 중심→엉덩이선 거리(px)
+  // 엉덩이선 중앙(월드): 지면에서 평균 엉덩이 높이만큼 위
+  const anchorY = GROUND_Y - footR - g.H.mid * PPM;
+  // 몸통 중심 = 엉덩이선 중앙 - R(pitch)·(0, bOff)
+  const bodyX = cx + Math.sin(pitch) * bOff;
+  const bodyY = anchorY - Math.cos(pitch) * bOff;
+  const opts = { collisionFilter: { group }, friction: 0.8, restitution: 0, frictionAir: 0 };
+
+  let torso;
+  if (params.mode === 'insect') {
+    // 실제 메뚜기 몸체: 머리(head)-흉부(thorax)-복부(abdomen) 세 부분으로 구분된 복합 강체.
+    // 충돌 형상과 질량 배분이 실제 해부 구조를 따름 (면적 비례: 복부 ~40%, 흉부 ~45%, 머리 ~15%).
+    // 흉부 아랫면(배)이 엎드린 자세에서 지면에 닿고, 복부는 뒤로 갈수록 가늘어 살짝 들림.
+    const ch = { radius: Math.min(6, bodyH * 0.28) };
+    const pOpt = { friction: 0.05, restitution: 0, frictionAir: 0, chamfer: ch }; // 매끈한 큐티클
+    const abd = Bodies.rectangle(bodyX - 0.27 * bodyW, bodyY - 0.07 * bodyH, 0.46 * bodyW, 0.70 * bodyH, pOpt);
+    const tho = Bodies.rectangle(bodyX + 0.12 * bodyW, bodyY, 0.42 * bodyW, bodyH, pOpt);
+    const head = Bodies.rectangle(bodyX + 0.41 * bodyW, bodyY - 0.05 * bodyH, 0.20 * bodyW, 0.82 * bodyH, pOpt);
+    torso = Body.create({ parts: [abd, tho, head], ...opts, friction: 0.05, label: 'torso' });
+  } else {
+    torso = Bodies.rectangle(bodyX, bodyY, bodyW, bodyH, {
+      ...opts, angle: pitch,
+      chamfer: { radius: Math.min(10, bodyW * 0.15, bodyH * 0.4) }, // 둥근 모서리
+      label: 'torso',
+    });
+  }
+  torso.plugin.ang0 = 0;
+
+  const legs = [], joints = [], all = [torso];
+  for (const type of legTypes()) {
+    const c = conf[type];
+    const [a1, a2] = poseAngles(type, 'stand');
+    const L1 = c.L1 * PPM, L2 = c.L2 * PPM;
+    // 엉덩이 월드 위치: 엉덩이선을 pitch만큼 회전
+    const hipX = cx + Math.cos(pitch) * c.hx * PPM;
+    const hipY = anchorY + Math.sin(pitch) * c.hx * PPM;
+    // 대퇴 (femur)
+    const f = Bodies.rectangle(
+      hipX + Math.cos(a1) * L1 / 2, hipY + Math.sin(a1) * L1 / 2,
+      L1, c.w * 1.6, { ...opts, angle: a1, label: 'femur' });
+    f.plugin.ang0 = 0;
+    // 정강이 + 발 (compound)
+    const kneeX = hipX + Math.cos(a1) * L1, kneeY = hipY + Math.sin(a1) * L1;
+    const shinRect = Bodies.rectangle(
+      kneeX + Math.cos(a2) * L2 / 2, kneeY + Math.sin(a2) * L2 / 2,
+      L2, Math.min(c.w * 1.3, footR * 1.6), // 정강이는 발바닥보다 얇게
+      { angle: a2, friction: params.friction, restitution: 0, frictionAir: 0 });
+    const foot = Bodies.circle(kneeX + Math.cos(a2) * L2, kneeY + Math.sin(a2) * L2, footR,
+      { friction: params.friction, restitution: 0, frictionAir: 0 });
+    const shinParts = [shinRect, foot];
+    // 실제 메뚜기의 앞·가운뎃다리: 발바닥(발목마디)이 지면에 납작하게 눕는 세 번째 마디 —
+    // 넓은 접촉면이 정강이의 회전을 잡아 엎드린 자세를 안정적으로 지탱 (사진 참조)
+    let padDim = null;
+    if (params.mode === 'insect' && type !== 'rear') {
+      const tl = 0.38 * L2, th = Math.max(1.6, footR * 1.1);
+      const footX2 = kneeX + Math.cos(a2) * L2, footY2 = kneeY + Math.sin(a2) * L2;
+      shinParts.push(Bodies.rectangle(
+        footX2 + tl / 2, footY2 + footR - th / 2, tl, th,
+        { friction: params.friction, restitution: 0, frictionAir: 0 }));
+      padDim = { w: tl, h: th };
+    }
+    const shin = Body.create({ parts: shinParts, ...opts, friction: params.friction, label: 'shin' });
+    shin.plugin.ang0 = a2 - shin.angle;   // 보정: compound 생성 후 angle 기준
+
+    Body.setMass(f, c.m1);
+    Body.setMass(shin, c.m2);
+    // 작은 다리의 관성 하한: 관절 제어 수치 안정성 확보 (로봇 크기에 비례)
+    const minI = 0.004 * gainScale() * (standH() / 0.36) * PPM * PPM;
+    Body.setInertia(f, Math.max(f.inertia, minI));
+    Body.setInertia(shin, Math.max(shin.inertia, minI));
+
+    // 실제 메뚜기 뒷다리의 부절(tarsus): 경절 끝에 관절로 연결된 독립 마디.
+    // 능동 근육 없이 수동 스프링-감쇠로 유지되고, 지면에 납작하게 눕어 접촉·그립을 담당
+    // (몸통 → 대퇴절 → 경절 → 부절 → 발 의 4마디 사슬 완성)
+    let tars = null, anklePin = null, tarsQ0 = 0, tarsDim = null;
+    if (params.mode === 'insect' && type === 'rear') {
+      const tl = 0.28 * L2, th = Math.max(1.6, footR * 1.1);
+      tarsDim = { w: tl, h: th };
+      const fx2 = kneeX + Math.cos(a2) * L2, fy2 = kneeY + Math.sin(a2) * L2;
+      tars = Bodies.rectangle(fx2 + tl / 2, fy2 + footR - th / 2, tl, th,
+        { ...opts, friction: params.friction, label: 'tars' });
+      tars.plugin.ang0 = 0;
+      Body.setMass(tars, 0.008);
+      Body.setInertia(tars, Math.max(tars.inertia, minI * 0.6));
+      anklePin = Constraint.create({
+        bodyA: shin, pointA: { x: fx2 - shin.position.x, y: fy2 - shin.position.y },
+        bodyB: tars, pointB: { x: fx2 - tars.position.x, y: fy2 - tars.position.y },
+        length: 0, stiffness: 1,
+      });
+      tarsQ0 = 0 - a2; // 정지 자세의 발목 상대각 (수동 스프링의 자연 각도)
+    }
+
+    // Matter 제약의 로컬 좌표는 "생성 시점의 월드 방향 오프셋"으로 해석됨
+    const hip = Constraint.create({
+      bodyA: torso,
+      // 복합 몸체(실제 메뚜기)는 무게중심이 기하 중심과 달라 월드 좌표 차이로 부착점 계산
+      pointA: params.mode === 'insect'
+        ? { x: hipX - torso.position.x, y: hipY - torso.position.y }
+        : {
+            x: Math.cos(pitch) * c.hx * PPM - Math.sin(pitch) * bOff,
+            y: Math.sin(pitch) * c.hx * PPM + Math.cos(pitch) * bOff,
+          },
+      bodyB: f, pointB: { x: -Math.cos(a1) * L1 / 2, y: -Math.sin(a1) * L1 / 2 },
+      length: 0, stiffness: 1,
+    });
+    const knee = Constraint.create({
+      bodyA: f, pointA: { x: Math.cos(a1) * L1 / 2, y: Math.sin(a1) * L1 / 2 },
+      bodyB: shin, pointB: { x: kneeX - shin.position.x, y: kneeY - shin.position.y },
+      length: 0, stiffness: 1,
+    });
+    legs.push({ femur: f, shin, tars, footR, type, L1, L2, padDim, tarsDim });
+    joints.push(
+      { parent: torso, child: f, type: 'hip', leg: type, pin: hip },
+      { parent: f, child: shin, type: 'knee', leg: type, pin: knee },
+    );
+    if (tars) joints.push({ parent: shin, child: tars, type: 'ankle', leg: type, pin: anklePin, q0: tarsQ0 });
+    all.push(f, shin);
+    if (tars) all.push(tars);
+  }
+  Body.setMass(torso, params.mass);
+
+  const comp = Composite.create();
+  all.forEach(b => Composite.add(comp, b));
+  joints.forEach(j => Composite.add(comp, j.pin));
+  return { all: comp, bodies: all, torso, legs, joints, pitch0: pitch };
+}
+
+// ---------- 측정 ----------
+function com() {
+  let m = 0, x = 0, y = 0;
+  for (const b of robot.bodies) { m += b.mass; x += b.position.x * b.mass; y += b.position.y * b.mass; }
+  return { x: x / m, y: y / m, m };
+}
+// 주의: Matter 0.19의 body.velocity/angularVelocity는 기준틱(16.67ms) 정규화 값
+const BASE_HZ = 60;
+function comVel() { // → m/s
+  let m = 0, vx = 0, vy = 0;
+  for (const b of robot.bodies) { m += b.mass; vx += b.velocity.x * b.mass; vy += b.velocity.y * b.mass; }
+  return { vx: vx / m * BASE_HZ / PPM, vy: vy / m * BASE_HZ / PPM };
+}
+function kinetic() { // J
+  let ke = 0;
+  for (const b of robot.bodies) {
+    const vms2 = ((b.velocity.x * BASE_HZ / PPM) ** 2 + (b.velocity.y * BASE_HZ / PPM) ** 2);
+    const w = b.angularVelocity * BASE_HZ;
+    const I = b.inertia / (PPM * PPM);
+    ke += 0.5 * b.mass * vms2 + 0.5 * I * w * w;
+  }
+  return ke;
+}
+function feetOnGround() {
+  let n = 0;
+  for (const leg of robot.legs) {
+    const foot = leg.shin.parts[2]; // [self, rect, circle]
+    const pad = leg.tars || leg.shin.parts[3]; // 부절(뒷다리) 또는 발바닥 패드(앞·가운뎃다리)
+    const bottom = pad ? pad.bounds.max.y : foot.position.y + leg.footR;
+    if (bottom >= GROUND_Y - Math.max(1.5, 0.058 * standH() * PPM)) n++; // 접지 판정 (최소 1.5px: 접촉 오차 여유)
+  }
+  return n;
+}
+function comHeight(c) { return (GROUND_Y - c.y) / PPM; }
+// 로봇의 어떤 부분이라도 지면에 닿아 있는지 (이륙/착지 판정용)
+function anyGroundContact() {
+  return robot.bodies.some(b => b.bounds.max.y >= GROUND_Y - 1);
+}
+
+// ---------- 관절 PD 제어 ----------
+function lerp(a, b, t) { return a + (b - a) * Math.min(1, Math.max(0, t)); }
+
+function controlStep() {
+  // 자세 유지용 제어(고정 게인)와 실험 변수인 점프 스프링(k 슬라이더)을 분리
+  const GS = gainScale(); // 로봇 크기에 맞춘 게인 배율 (기본 로봇 ≈ 1)
+  for (const j of robot.joints) {
+    if (j.type === 'ankle') {
+      // 부절(발목): 능동 근육 없는 수동 스프링-감쇠 관절 — τ = k·Δθ − c·ω
+      const qA = absAngle(j.child) - absAngle(j.parent);
+      const wA = (j.child.angularVelocity - j.parent.angularVelocity) * BASE_HZ;
+      const eA = Math.atan2(Math.sin(j.q0 - qA), Math.cos(j.q0 - qA));
+      const GSa = gainScale();
+      const tauA = Math.max(-5 * GSa, Math.min(5 * GSa, 4 * GSa * eA - 0.6 * GSa * wA));
+      j.child.torque += tauA * TQ;
+      j.parent.torque -= tauA * TQ;
+      continue;
+    }
+    let target, k = 60, c = 6, cap = 40;
+    const qStand = poseQ(j.leg, 'stand'), qCrouch = poseQ(j.leg, 'crouch');
+    const catKnee = isCat() && j.leg === 'rear' && j.type === 'knee'; // 탄성 방출 구동 관절(무릎)
+    const strut = params.mode === 'physical' && j.leg === 'front'; // 실물 모형의 앞 지지대(고정 막대)
+    // 실제 메뚜기: 장전 중 앞·가운뎃다리는 회전하지 않고 서 있던 자세 그대로 지탱 (실제 관찰과 동일)
+    const holdStand = params.mode === 'insect' && j.leg !== 'rear' && (phase === 'crouch' || phase === 'load');
+    if (phase === 'idle' || phase === 'landed' || strut || holdStand) {
+      target = qStand;
+      // 실제 메뚜기: 접지한 앞·가운뎃다리는 낮은 강성 + 높은 감쇠 (발바닥 접촉의
+      // 고주파 떨림 방지 — 실제 근육도 정지 유지 시 점성이 큼)
+      if (params.mode === 'insect' && j.leg !== 'rear') { k = 28; c = 14; cap = 30; }
+    }
+    else if (phase === 'crouch') {
+      const goal = isCat() ? poseQ(j.leg, 'cock') : qCrouch;
+      const t = phaseT / 0.55;
+      target = { q1: lerp(qStand.q1, goal.q1, t), q2: lerp(qStand.q2, goal.q2, t) };
+      k = 45; c = 5; cap = 32;
+    } else if (phase === 'load') {
+      // 장전 유지: 걸쇠(굴근/손)가 접힌 무릎을 강하게 잠금
+      target = poseQ(j.leg, 'cock');
+      k = 60; c = 6; cap = catKnee ? 70 : 45;
+    } else if (phase === 'launch') {
+      if (params.mode === 'physical' && j.leg === 'rear' && j.type === 'hip') {
+        // 실물 모형: 발사 순간 엉덩이는 자유 회전축 — 무릎이 벌어지면 2절 링크(가위잭)처럼
+        // 발(지면 고정)과 몸통 사이가 밀려나며 몸이 발사됨
+        target = qStand; k = 0; c = 0.4; cap = 5;
+      } else if (params.mode === 'insect' && j.leg === 'rear' && j.type === 'hip') {
+        // 실제 메뚜기: 발사 순간 고관절은 거의 자유롭게 열림 — 무릎이 벌어지며
+        // 발(발톱 그립)과 몸 사이가 2절 링크처럼 밀려나 도약 (실물 모형과 동일 원리)
+        target = qStand; k = 0; c = 0.6; cap = 8;
+      } else {
+        target = extQ(j.leg); k = params.mode === 'physical' ? 300 : params.k; c = 1.5;
+        cap = (params.mode === 'physical' ? 200 : params.tauMax) * legConf()[j.leg].capMul;
+      }
+    } else if (phase === 'flight') {
+      // 체공 중: 일반 모드는 다리 접기. 실물 모형·실제 메뚜기는 뒷다리를 쭉 편 채
+      // 몸 뒤로 끌며 비행 (사진: 도약 중 뒷다리가 완전히 신전되어 뒤로 뻗음)
+      target = ((params.mode === 'physical' || params.mode === 'insect') && j.leg === 'rear') ? extQ(j.leg) : qCrouch;
+      k = 15; c = 2; cap = 10;
+    }
+    if (!target) return;
+    k *= GS; c *= GS; cap *= GS;
+
+    const q = absAngle(j.child) - absAngle(j.parent);
+    const w = (j.child.angularVelocity - j.parent.angularVelocity) * BASE_HZ; // rad/s
+    // 주의: 상한(cap)은 스프링 성분에만 적용 (감쇠까지 상한에 걸리면 진동 불안정 발생)
+    let tau;
+    if (phase === 'launch' && catKnee && jump && jump.cat) {
+      // 투석기/고무줄 방출: 저장 에너지가 스프링 토크로 풀림. 늘어난 길이가 0이 되면
+      // 고무줄/힘줄은 슬랙(느슨) 상태 → 미는 힘만 있고 당기지 않음
+      const dq = jump.cat.qRest - q; // 남은 신전량 (>0이면 아직 늘어나 있음)
+      const capRel = (params.mode === 'catapult' ? 250 : 2000) * GS; // 수치 안전 상한
+      let tauB;
+      if (jump.cat.ads) {
+        // 실제 메뚜기: 각도 의존 스프링 — 접힘 직후엔 모멘트암이 작아 토크가 완만하게 시작,
+        // 신전 중반에 최대가 되는 실제 방출 프로파일 (τ = k·x(θ)·r(θ), 총 방출 에너지 = E)
+        const a = jump.cat.ads;
+        const sN = Math.min(1, Math.max(0, (q - a.q0) / a.dq));
+        const r = 1 + (a.rho - 1) * sN;
+        const x = a.dq * ((1 - sN) + (a.rho - 1) * (1 - sN * sN) / 2);
+        tauB = Math.max(0, Math.min(capRel, dq > 0 ? a.k * x * r : 0));
+        // 방출률(출력) 상한: P = τ·ω ≤ P_max. 실측 P_max(와트)를 상사 법칙으로 프록시 단위 환산
+        if (w > 1) {
+          const Pmax = (TUNE.insPmax ?? 0.9) * (totalMass() / params.iMass) * Math.sqrt(insectSF());
+          tauB = Math.min(tauB, Pmax / w);
+        }
+      } else {
+        tauB = Math.max(0, Math.min(capRel, jump.cat.kEff * dq));
+      }
+      // 무릎 스토퍼(관절 한계): 과신전 시 강하게 멈춤 — 다리의 운동량이 몸통으로 전달됨
+      if (dq < -0.06) tauB += 600 * GS * (dq + 0.06);
+      tau = tauB - 0.8 * GS * w;
+    } else {
+      let qT = (j.type === 'hip') ? target.q1 : target.q2;
+      // 엉덩이 관절은 세계좌표 기준으로 제어 → 몸이 기울어도 다리가 지면을 향해 자세를 회복
+      if (j.type === 'hip' && phase !== 'flight') qT -= robot.torso.angle;
+      // 고관절 각도 오차는 ±180° 범위로 정규화: 공중제비로 몸통각이 ±360° 누적돼도
+      // 다리가 한 바퀴를 "되감으려" 계속 도는 현상(착지 후 다리 회전 버그) 방지.
+      // (무릎은 몸통각과 무관하므로 원래 오차 그대로 — 접힘 방향 반전 래칫 방지)
+      let eW = qT - q;
+      if (j.type === 'hip') eW = Math.atan2(Math.sin(eW), Math.cos(eW));
+      // 정지 유지(quiet hold): 엎드린 정지 상태의 앞·가운뎃다리는 도달 못 하는 목표와
+      // 싸우는 대신 "현재 잡은 자세"를 목표로 유지 — 제어기-접촉의 상시 씨름이 만들던
+      // 미세 진동과, 진동+마찰의 래칫으로 몸이 뒤로 기어가던 현상을 원천 제거
+      const quietHold = params.mode === 'insect' && j.leg !== 'rear' &&
+        (phase === 'idle' || phase === 'crouch' || phase === 'load');
+      if (quietHold) {
+        if (j.restQ === undefined) j.restQ = q;
+        eW = j.restQ - q;
+        if (Math.abs(eW) > 0.6) { j.restQ = q; eW = 0; } // 외력으로 크게 밀리면 새 자세 수용
+      } else {
+        j.restQ = undefined;
+      }
+      let spring = k * eW;
+      // 무릎 역꺾임(과신전) 방지: 굽힘 방향 유지용 제한 토크 (정지 유지 중에는 불필요)
+      if (j.type === 'knee' && phase !== 'launch' && !quietHold) {
+        const bend = legConf()[j.leg].bend;
+        if (bend > 0 ? q > -0.12 : q < 0.12) spring += 80 * GS * ((bend > 0 ? -0.12 : 0.12) - q);
+      }
+      tau = Math.max(-cap, Math.min(cap, spring - c * w));
+    }
+    // Matter 단위로 적용
+    j.child.torque += tau * TQ;
+    j.parent.torque -= tau * TQ;
+    // 발사 구간 입력 일(work) 적산: W += τ·ω_rel·dt (양의 일만)
+    // (투석기 뒷무릎은 장전 때 이미 저장 에너지로 계상했으므로 제외)
+    if (jump && phase === 'launch' && !catKnee) {
+      const p = tau * w * DT_S;
+      if (p > 0) jump.workIn += p;
+    }
+  }
+  // 체공 중 자세 제어 (실제 메뚜기): 다리·날개·배 자세로 회전을 억제함
+  if (params.mode === 'insect' && phase === 'flight') {
+    const t = robot.torso;
+    let tp = -GS * 8 * (t.angularVelocity * BASE_HZ);
+    tp = Math.max(-16 * GS, Math.min(16 * GS, tp));
+    t.torque += tp * TQ;
+  }
+  // 몸통 자세 안정화 (지면 위에 있을 때): 로봇의 균형 반사 역할
+  // 실제 메뚜기 모드: 접힌 뒷다리(무거운 넓적다리가 높이 솟음) 때문에 자세가 뒤로 넘어지기 쉬워
+  // 반사를 더 강하게 하고, 반작용은 접힌 뒷다리를 건드리지 않도록 앞·가운뎃다리에만 분산
+  if ((phase === 'idle' || phase === 'landed' || phase === 'crouch' || phase === 'load')) {
+    const t = robot.torso;
+    const ins = params.mode === 'insect';
+    const kp = ins ? 420 : 140, kd = ins ? 40 : 16, capP = ins ? 220 : 60;
+    let eP = Math.atan2(Math.sin(robot.pitch0 - t.angle), Math.cos(robot.pitch0 - t.angle)); // ±180° 정규화
+    // 실제 메뚜기: 엎드린 몸은 지면이 직접 받쳐주므로 5° 이내의 기울기는 교정하지 않음
+    // (미세 오차를 상시 교정하는 토크의 반작용이 매끄러운 배를 밀어 몸이 기어가는 현상 방지)
+    if (ins) eP = Math.abs(eP) < 0.09 ? 0 : eP - Math.sign(eP) * 0.09;
+    let tp = GS * (kp * eP - kd * (t.angularVelocity * BASE_HZ));
+    tp = Math.max(-capP * GS, Math.min(capP * GS, tp));
+    t.torque += tp * TQ;
+    // 내부 반작용: 실제 메뚜기 모드는 배가 지면에 닿아 지면이 직접 반작용을 받으므로 생략
+    // (다리에 주면 깊게 접힌 가벼운 앞·가운뎃다리가 계속 흔들리는 진동 유발)
+    if (!ins) for (const leg of robot.legs) leg.femur.torque -= (tp / robot.legs.length) * TQ;
+  }
+}
+
+// ---------- 점프 시퀀스 ----------
+function startJump() {
+  if (phase !== 'idle' && phase !== 'landed') return;
+  // 정지 상태(실물 모형 착지 후)면 처음 위치로 리셋 후 시작
+  if (frozen) { frozen = false; reset(false); }
+  // 넘어져 있으면 자동으로 제자리 리셋 후 시작
+  if (Math.abs(robot.torso.angle - robot.pitch0) > 0.5 || feetOnGround() === 0) reset(false);
+  // 실제 메뚜기: 발사 전에는 배가 매끈하게 미끄러지도록 (착지 때 올렸던 제동 마찰·감쇠 원복)
+  if (params.mode === 'insect') {
+    robot.torso.friction = 0.05;
+    robot.torso.parts.forEach(p => p.friction = 0.05);
+    for (const b of robot.bodies) b.frictionAir = 0;
+  }
+  const c = com();
+  jump = {
+    workIn: 0, startX: c.x, startH: comHeight(c), maxH: -1, takeoff: null,
+    takeoffT: 0, landT: 0, dist: 0, airTime: 0, keTakeoff: 0, t0: simT,
+  };
+  series.push({ pts: [], live: true });
+  if (series.length > 3) series.shift();
+  setPhase('crouch');
+}
+function setPhase(p) { phase = p; phaseT = 0; updateBadge(); }
+function updateBadge() {
+  const map = { idle: '대기', crouch: '웅크리는 중', load: '장전 중 (에너지 저장)', launch: params.mode === 'catapult' ? '걸쇠 해제!' : '발사!', flight: '체공', landed: '착지' };
+  document.getElementById('phaseBadge').textContent = map[phase] || phase;
+}
+
+let frozen = false; // 실물 모형: 착지 순간 정지 (착지 후 동작은 시뮬레이션하지 않음)
+function physicsTick() {
+  if (frozen) return;
+  for (let i = 0; i < SUBSTEPS; i++) {
+    controlStep();
+    Engine.update(engine, DT_MS);
+    simT += DT_S; phaseT += DT_S;
+
+    if (phase === 'crouch' && phaseT > 0.7) {
+      setPhase(isCat() ? 'load' : 'launch');
+    } else if (phase === 'load') {
+      // 장전: 에너지를 탄성체에 저장 (메뚜기: 근육 수축 / 실물 모형: 고무줄 당기기)
+      const kneeJ = robot.joints.find(jt => jt.leg === 'rear' && jt.type === 'knee');
+      const qNow = absAngle(kneeJ.child) - absAngle(kneeJ.parent);
+      const qRestKnee = extQ('rear').q2; // 방출 목표각 (탄성체 자연길이 지점)
+      const dTh = qRestKnee - qNow;
+      const frac = Math.min(1, phaseT / 0.9);
+      const Efull = params.mode === 'physical'
+        ? params.nBands * 0.5 * 150 * (params.pullCm / 100) ** 2  // 고무줄: n·½kx² (k≈150 N/m)
+        : params.mode === 'insect'
+          // 상사 조건: E/(M·g·L) 동일 → E_프록시 = E_실측 × (M프록시/M실측) × (L프록시/L실측)
+          ? params.iE * (totalMass() / params.iMass) * insectSF()
+          : 0.85 * params.tauMax * Math.abs(dTh);                  // 근육이 장전에 하는 일
+      jump.catCharge = { frac, E: Efull * frac };
+      if (phaseT > 0.95) {
+        // 걸쇠 해제 준비: 저장 에너지를 등가 탄성체(kEff)로 변환
+        const E = jump.catCharge.E;
+        jump.cat = { E, kEff: 2 * E / (dTh * dTh), qRest: qRestKnee };
+        if (params.mode === 'insect') {
+          // 각도 의존 스프링: 힘줄 늘어남 x(θ) = ∫r dθ, 장력 T = k·x, 토크 τ = T·r(θ).
+          // r(s) = 1 + (ρ−1)s (s: 신전 진행률 0→1). k는 ½k·x_max² = E 가 되도록 역산 → 에너지 보존.
+          const rho = TUNE.insRho ?? 8;
+          const q0 = qNow, dq = dTh; // q0: 장전(접힘) 각, dq: 총 신전량
+          const xMax = dq * (1 + rho) / 2;
+          jump.cat.ads = { q0, dq, rho, k: 2 * E / (xMax * xMax) };
+        }
+        jump.workIn += E; // 장전에 쓴 일 = 입력 에너지
+        if (params.mode === 'physical' || params.mode === 'insect') {
+          // 발끝이 지면을 무는 그립 (실물: 발 마찰 / 메뚜기: 부절 발톱이 지면을 붙잡음).
+          // 힘 전달 경로는 경절 끝 접점 — 부절은 수동 마디라 그립 앵커는 경절 끝에 둠
+          const rearL = robot.legs.find(l => l.type === 'rear');
+          const fp = rearL.shin.parts[2].position;
+          jump.footPin = Constraint.create({
+            bodyA: rearL.shin, pointA: { x: fp.x - rearL.shin.position.x, y: fp.y - rearL.shin.position.y },
+            pointB: { x: fp.x, y: fp.y }, length: 0, stiffness: 0.6,
+          });
+          jump.pinH0 = comHeight(com());
+          Composite.add(engine.world, jump.footPin);
+        }
+        setPhase('launch');
+      }
+    } else if (phase === 'launch') {
+      // 실물 모형: 다리가 거의 다 펴지거나, 몸이 충분히 떠오르거나, 시간이 지나면 발 그립 해제
+      if (jump && jump.footPin && jump.cat) {
+        const kj = robot.joints.find(jt => jt.leg === 'rear' && jt.type === 'knee');
+        const qk = absAngle(kj.child) - absAngle(kj.parent);
+        // 각도 의존 스프링(실제 메뚜기)에서는 신전 후반에 토크가 크므로,
+        // 실제처럼 이륙 직전(거의 완전 신전)까지 발 그립을 유지해야 에너지가 몸으로 전달됨.
+        // 단, 발톱의 쥐는 힘에는 한계가 있음 — 제약이 한계 이상 늘어나면(과도한 힘) 미끄러져 해제
+        const relQ = jump.cat.ads ? 0.06 : 0.35;
+        const relH = jump.cat.ads ? 0.12 : 0.04;
+        let slip = false;
+        if (jump.cat.ads) {
+          const g2 = jump.footPin.bodyA;
+          const ca = jump.footPin.pointA, cb = jump.footPin.pointB;
+          const wx = g2.position.x + ca.x * Math.cos(g2.angle) - ca.y * Math.sin(g2.angle);
+          const wy = g2.position.y + ca.x * Math.sin(g2.angle) + ca.y * Math.cos(g2.angle);
+          slip = Math.hypot(wx - cb.x, wy - cb.y) > (TUNE.insSlipPx ?? 5);
+        }
+        if (slip || qk > jump.cat.qRest - relQ || comHeight(com()) > jump.pinH0 + relH || phaseT > 0.25) {
+          Composite.remove(engine.world, jump.footPin);
+          jump.footPin = null;
+        }
+      }
+      if (feetOnGround() === 0 && (params.mode === 'physical' || params.mode === 'insect' || !anyGroundContact())) {
+        // 발이 잠깐 튄 게 아니라 정말 떠올랐는지 30ms 연속 확인
+        if (!jump.pendingTakeoff) {
+          jump.pendingTakeoff = { v: comVel(), ke: kinetic(), t: simT, h: comHeight(com()) };
+        } else if (simT - jump.pendingTakeoff.t >= 0.03) {
+          jump.takeoff = jump.pendingTakeoff.v;
+          jump.keTakeoff = jump.pendingTakeoff.ke;
+          jump.takeoffT = jump.pendingTakeoff.t;
+          jump.takeoffH = jump.pendingTakeoff.h;
+          setPhase('flight');
+        }
+      } else {
+        jump.pendingTakeoff = null;
+        if (phaseT > 0.8) finishJump(false); // 실패 (이륙 못함)
+      }
+    } else if (phase === 'flight') {
+      const c = com();
+      jump.maxH = Math.max(jump.maxH, comHeight(c));
+      const bodyDown = robot.bodies.some(b => b.bounds.max.y >= GROUND_Y - 1);
+      // 착지 판정은 하강 중일 때만: 상승 중 뒤로 뻗은 다리 끝이 땅을 스치는 것은 착지가 아님
+      const descending = comVel().vy > 0;
+      if (descending && (feetOnGround() > 0 || bodyDown) && phaseT > 0.05) {
+        jump.landT = simT;
+        jump.dist = (c.x - jump.startX) / PPM;
+        jump.airTime = jump.landT - jump.takeoffT;
+        setPhase('landed');
+        if (params.mode === 'physical') {
+          // 실물 모형: 착지 순간 측정 종료 + 화면 정지 (착지 후 동작은 재현하지 않음)
+          finishJump(true);
+          frozen = true;
+          document.getElementById('phaseBadge').textContent = '착지 (정지됨 — 다시 점프하려면 [점프 실행])';
+          return;
+        }
+        // 실제 메뚜기: 착지 후에도 계속 진행 — 앞·가운뎃다리로 충격을 받고 미끄러지다
+        // 뒷다리를 다시 접으며 배를 바닥에 붙인 엎드린 자세로 정착 (측정값은 첫 접지 기준).
+        // 착지 순간부터 다리·발톱이 지면을 붙잡아 제동 (몸통 마찰 상승) +
+        // 다리 관절이 충격을 흡수하며 에너지를 잃는 효과 (감쇠) — 몇 몸길이 안에 정지
+        robot.torso.friction = 0.6;
+        robot.torso.parts.forEach(p => p.friction = 0.6);
+        for (const b of robot.bodies) b.frictionAir = 0.045;
+      } else if (phaseT > 5) { setPhase('landed'); }
+    } else if (phase === 'landed' && phaseT > (params.mode === 'insect' ? 1.6 : 0.9)) {
+      finishJump(true);
+    }
+    if (phase === 'launch' && jump) jump.maxH = Math.max(jump.maxH, comHeight(com()));
+  }
+  // 기록 (렌더 프레임마다 1점)
+  const c = com();
+  // 지면 반력 측정: F = M·(상향가속도 + g) — 발이 땅에 있는 발사 구간에서 최대값 기록
+  if (jump && (phase === 'crouch' || phase === 'launch')) {
+    const vNow = comVel();
+    if (jump.prevVy !== undefined && phase === 'launch' && feetOnGround() > 0) {
+      const aUp = -(vNow.vy - jump.prevVy) * FPS; // m/s²
+      const F = c.m * (aUp + 9.81 * params.g);
+      if (F > (jump.peakF || 0)) jump.peakF = F;
+    }
+    jump.prevVy = vNow.vy;
+  }
+  if (jump && phase !== 'idle') {
+    const s = series[series.length - 1];
+    if (s && s.live) s.pts.push({ t: simT - jump.t0, h: comHeight(c), x: (c.x - jump.startX) / PPM });
+  }
+  if (document.getElementById('chkTrace').checked && phase !== 'idle' && phase !== 'landed') {
+    trace.push({ x: c.x, y: c.y });
+    if (trace.length > 900) trace.shift();
+  }
+}
+function finishJump(success) {
+  if (jump && jump.footPin) { Composite.remove(engine.world, jump.footPin); jump.footPin = null; }
+  const s = series[series.length - 1];
+  if (s) s.live = false;
+  // 유효성: 실제로 떠올랐는지 검사
+  if (success && jump && (!jump.takeoff || jump.airTime < 0.05 || jump.maxH - jump.startH < 0.02)) success = false;
+  if (success && jump && jump.takeoff) {
+    trialNum++;
+    // 실제 메뚜기 모드: 상사 법칙 환산 계수 (길이 ×cvL, 속도·시간 ×√cvL, 힘 ×질량비)
+    const insect = params.mode === 'insect';
+    const cvL = insect ? insectLenScale() : 1;
+    const cvT = insect ? Math.sqrt(cvL) : 1;
+    const cvF = insect ? (params.iMass / totalMass()) : 1;
+    const v = Math.hypot(jump.takeoff.vx, jump.takeoff.vy) * cvT;
+    const angle = Math.atan2(-jump.takeoff.vy, jump.takeoff.vx) / D2R;
+    const relH = Math.max(0, jump.maxH - jump.startH) * cvL;
+    const dist = jump.dist * cvL;
+    const airT = jump.airTime * cvT;
+    const eff = jump.workIn > 0 ? Math.min(100, jump.keTakeoff / jump.workIn * 100) : 0;
+    const footDReal = params.footD * cvL; // 실제 크기의 발바닥 지름
+    const footAreaCm2 = Math.PI * (footDReal * 100 / 2) ** 2;
+    const peakF = (jump.peakF || 0) * cvF;
+    // 서식지 시나리오 적합도 점수 (0~100)
+    const bodyL = insect ? params.iBL : params.bW;
+    const dPos = Math.max(0, dist);
+    const pressNow = footAreaCm2 > 0 ? peakF / footAreaCm2 : 0;
+    const Ein = insect ? params.iE : jump.workIn;
+    const Mreal = insect ? params.iMass : totalMass();
+    let fit = null;
+    if (params.scenario === 'grass') {
+      fit = 50 * Math.min(1, relH / (5 * bodyL)) + 50 * Math.min(1, dPos / (10 * bodyL));
+    } else if (params.scenario === 'sand') {
+      fit = 100 * Math.min(1, dPos / (10 * bodyL)) * (pressNow > 3 ? 0.5 : 1);
+    } else if (params.scenario === 'predator') {
+      fit = 100 * Math.min(1, v / (5.5 * Math.sqrt(9.81 * params.g * bodyL)));
+    } else if (params.scenario === 'economy') {
+      fit = Ein > 0 ? 100 * Math.min(1, Mreal * 9.81 * params.g * dPos / Ein) : 0;
+    }
+    const row = {
+      scen: params.scenario, fit,
+      n: trialNum, mode: params.mode, nBands: params.nBands, pullCm: params.pullCm,
+      g: params.g, m: insect ? params.iMass : params.mass, k: params.k,
+      tau: params.tauMax, ang: params.jumpAng, fr: params.friction,
+      rF: insect ? params.irF : params.rF, rT: insect ? params.irT : params.rT,
+      fF: params.fF * cvL, fT: params.fT * cvL, mF: params.mF * cvL, mT: params.mT * cvL,
+      bW: params.bW * cvL, bH: params.bH * cvL, bD: params.bD * cvL, footD: footDReal,
+      h: relH, d: dist, air: airT, v, angle, eff,
+      peakF, press: pressNow,
+      riseFromTakeoff: Math.max(0, jump.maxH - (jump.takeoffH ?? jump.startH)) * cvL,
+    };
+    trials.push(row);
+    renderTiles(row); renderTable();
+  } else if (!success) {
+    document.getElementById('t_h').innerHTML = '이륙 실패<span class="u"></span>';
+    const hud = document.getElementById('hud');
+    hud.style.display = '';
+    hud.innerHTML = '<b style="color:var(--text-primary);">이륙 실패</b> — 조건을 바꿔 다시 시도해 보세요';
+  }
+  jump = null;
+  setPhase('idle');
+  // 착지 후 넘어졌으면 자동 복구 (실물 모형·실제 메뚜기는 정지 상태 유지)
+  if (params.mode !== 'physical' && params.mode !== 'insect' && Math.abs(robot.torso.angle - robot.pitch0) > 0.6) reset(false);
+  drawChart();
+}
+
+// ---------- 렌더링 ----------
+function cssVar(n) { return getComputedStyle(document.body).getPropertyValue(n).trim(); }
+
+let viewMode = 'side'; // 'side' | 'iso'
+function drawWorld() {
+  vsFrame++; // 시각적 평활화 프레임 카운터
+  if (viewMode === 'iso') drawWorld3D(); else drawWorldSide();
+  drawEnergyGauge();
+}
+
+// ---------- 시각적 평활화 (실제 메뚜기 모드) ----------
+// 물리 계산은 그대로 두고 "그리는 좌표"만 저역통과 필터로 걸러, 정지 자세에서
+// 접촉-제어 상호작용이 만드는 미세 떨림(수치 진동, ±1° 미만)을 화면에서 제거.
+// 발사·체공·착지 직후처럼 빠른 실제 움직임에서는 필터를 끔(α=1) → 지연 없음.
+const vsCache = new Map();
+let vsFrame = 0;
+function vs(b) {
+  if (params.mode !== 'insect') return { x: b.position.x, y: b.position.y, a: b.angle };
+  const fast = phase === 'launch' || phase === 'flight' || (phase === 'landed' && phaseT < 0.5);
+  let s = vsCache.get(b.id);
+  if (s && s.f === vsFrame) return s;
+  if (!s || fast) {
+    s = { x: b.position.x, y: b.position.y, a: b.angle, f: vsFrame };
+    vsCache.set(b.id, s);
+    return s;
+  }
+  const al = 0.28;
+  s.x += (b.position.x - s.x) * al;
+  s.y += (b.position.y - s.y) * al;
+  s.a += Math.atan2(Math.sin(b.angle - s.a), Math.cos(b.angle - s.a)) * al;
+  s.f = vsFrame;
+  return s;
+}
+
+// 투석기 장전 에너지 게이지 (화면 좌상단 오버레이)
+function drawEnergyGauge() {
+  if (!isCat() || !jump || !jump.catCharge) return;
+  if (phase !== 'load' && phase !== 'launch' && phase !== 'crouch') return;
+  const { frac, E } = jump.catCharge;
+  const x = 14, y = 14, w = 190, h = 40;
+  ctx.save();
+  ctx.fillStyle = cssVar('--surface-1'); ctx.globalAlpha = 0.9;
+  ctx.beginPath(); ctx.roundRect(x, y, w, h, 8); ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = cssVar('--border'); ctx.stroke();
+  ctx.fillStyle = cssVar('--text-secondary'); ctx.font = '11px "Inter", "Noto Sans KR", system-ui'; ctx.textAlign = 'left';
+  ctx.fillText(params.mode === 'physical' ? '고무줄 탄성 에너지 (당기는 중)' : '탄성 에너지 저장 (근육 → 탄성체)', x + 10, y + 15);
+  ctx.fillStyle = cssVar('--grid');
+  ctx.beginPath(); ctx.roundRect(x + 10, y + 21, w - 70, 10, 5); ctx.fill();
+  ctx.fillStyle = cssVar('--series-2');
+  ctx.beginPath(); ctx.roundRect(x + 10, y + 21, Math.max(2, (w - 70) * frac), 10, 5); ctx.fill();
+  ctx.fillStyle = cssVar('--text-primary'); ctx.font = 'bold 11px "Inter", "Noto Sans KR", system-ui';
+  let Eshow = E;
+  if (params.mode === 'insect') Eshow = E * (params.iMass / totalMass()) * insectLenScale(); // 실제 크기 환산
+  ctx.fillText(Eshow < 0.1 ? (Eshow * 1000).toFixed(0) + ' mJ' : (Eshow < 10 ? Eshow.toFixed(2) : Eshow.toFixed(0)) + ' J', x + w - 52, y + 30);
+  ctx.restore();
+}
+
+// ---------- 45° 내려보기(3D) 렌더링 ----------
+// 같은 물리 상태를 3차원으로 입체화: 다리 세 쌍이 좌우(±몸통 폭/2)로 나뉘어 6개가 보이고,
+// 카메라는 위에서 45° 각도로 내려다봄. (직교 투영: u = x, v = 기준선 − 0.707·높이 − 0.707·깊이)
+const V3 = { E: Math.SQRT1_2, BASE: 322, ZMAX: () => Math.min(1.6, Math.max(0.3, standH() * 4)) * PPM };
+function proj3(x, hPx, zPx) { return { u: x, v: V3.BASE - V3.E * hPx - V3.E * zPx }; }
+function hOf(y) { return GROUND_Y - y; } // matter y → 지면 위 높이(px)
+
+function legJoints(leg) {
+  const f = leg.femur, sf = vs(f);
+  const a1 = sf.a + (f.plugin.ang0 || 0);
+  const hip = { x: sf.x - Math.cos(a1) * leg.L1 / 2, y: sf.y - Math.sin(a1) * leg.L1 / 2 };
+  const knee = { x: sf.x + Math.cos(a1) * leg.L1 / 2, y: sf.y + Math.sin(a1) * leg.L1 / 2 };
+  const sft = vs(leg.shin.parts[2]);
+  return { hip, knee, foot: { x: sft.x, y: sft.y } };
+}
+
+function drawLeg3D(leg, zPx, far) {
+  const { hip, knee, foot } = legJoints(leg);
+  const c = legConf()[leg.type];
+  const ins = params.mode === 'insect';
+  ctx.save();
+  ctx.globalAlpha = far ? 0.55 : 1;
+  ctx.lineCap = 'round';
+  const P = p => proj3(p.x, hOf(p.y), zPx);
+  const a = P(hip), b = P(knee), d3 = P(foot);
+  ctx.strokeStyle = ins ? IC.femur : cssVar('--robot-leg');
+  ctx.lineWidth = ins && leg.type === 'rear' ? Math.max(4, leg.L1 * 0.16) : c.w * 1.6;
+  ctx.beginPath(); ctx.moveTo(a.u, a.v); ctx.lineTo(b.u, b.v); ctx.stroke();
+  ctx.strokeStyle = ins ? IC.tibia : cssVar('--robot-leg');
+  ctx.lineWidth = ins ? Math.max(1.3, leg.L2 * 0.06) : Math.min(c.w * 1.3, leg.footR * 1.6);
+  ctx.beginPath(); ctx.moveTo(b.u, b.v); ctx.lineTo(d3.u, d3.v); ctx.stroke();
+  ctx.fillStyle = ins ? IC.tarsus : cssVar('--robot-foot');
+  ctx.beginPath(); ctx.arc(d3.u, d3.v, leg.footR * 0.95, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+
+function drawWorld3D() {
+  updateCam();
+  ctx.save();
+  const ax = camAnchorX(), sx = camScreenX();
+  ctx.translate(sx, V3.BASE); ctx.scale(camS, camS); ctx.translate(-ax, -V3.BASE);
+  const wl = ax - sx / camS - 60, wr = ax + (W - sx) / camS + 60;
+  const wt = V3.BASE - V3.BASE / camS - 60, wb = V3.BASE + (H - V3.BASE) / camS + 60;
+  const zHalf = params.bD / 2 * PPM;          // 몸통 절반 폭(깊이)
+  const zmax = V3.ZMAX();
+  const vFar = V3.BASE - V3.E * zmax, vNear = V3.BASE + V3.E * zmax;
+  // 하늘
+  const sky = ctx.createLinearGradient(0, 0, 0, vFar);
+  sky.addColorStop(0, cssVar('--sky-top')); sky.addColorStop(1, cssVar('--sky-bot'));
+  ctx.fillStyle = sky; ctx.fillRect(wl, wt, wr - wl, vFar - wt);
+  // 지면 띠 (멀수록 살짝 어둡게)
+  const gg = ctx.createLinearGradient(0, vFar, 0, vNear);
+  gg.addColorStop(0, cssVar('--ground-line')); gg.addColorStop(0.25, cssVar('--ground')); gg.addColorStop(1, cssVar('--ground'));
+  ctx.fillStyle = gg; ctx.fillRect(wl, vFar, wr - wl, vNear - vFar);
+  ctx.fillStyle = cssVar('--page'); ctx.fillRect(wl, vNear, wr - wl, wb - vNear);
+  // 격자: 깊이 방향(가로선), 거리 방향(세로선)
+  ctx.strokeStyle = cssVar('--ground-line'); ctx.lineWidth = 1;
+  ctx.globalAlpha = 0.5;
+  const zr = zmax / PPM, zStep = zr > 0.8 ? 0.5 : 0.1;
+  for (let z = -zr + 1e-9; z <= zr; z += zStep) {
+    const v = V3.BASE - V3.E * z * PPM;
+    ctx.beginPath(); ctx.moveTo(wl, v); ctx.lineTo(wr, v); ctx.stroke();
+  }
+  const stepM3 = (PPM > 1000) ? 0.05 : (PPM > 200) ? 0.1 : 1;
+  const lenFac3 = params.mode === 'insect' ? insectLenScale() : 1;
+  const lab3 = i => lenFac3 !== 1
+    ? (i * stepM3 * lenFac3 * 100).toFixed(1) + ' cm'
+    : (stepM3 < 1 ? Math.round(i * stepM3 * 100) + ' cm' : (i * stepM3) + ' m');
+  const fpx3 = 10 / camS; // 줌아웃해도 눈금 글자는 화면 기준 같은 크기로
+  ctx.fillStyle = cssVar('--muted'); ctx.font = fpx3 + 'px "Inter", "Noto Sans KR", system-ui'; ctx.textAlign = 'center';
+  for (let i = 0; i * stepM3 * PPM < wr; i++) {
+    const x = i * stepM3 * PPM;
+    if (x < wl) continue;
+    ctx.beginPath(); ctx.moveTo(x, vFar); ctx.lineTo(x, vNear); ctx.stroke();
+    if (i % 2 === 0) { ctx.globalAlpha = 1; ctx.fillText(lab3(i), x, vNear + fpx3 * 1.4); ctx.globalAlpha = 0.5; }
+  }
+  ctx.globalAlpha = 1;
+  // 그림자 (몸통 + 발): 점프 높이를 보여주는 단서
+  ctx.fillStyle = '#000';
+  const t = robot.torso;
+  ctx.globalAlpha = 0.10;
+  ctx.beginPath();
+  ctx.ellipse(t.position.x, V3.BASE, params.bW / 2 * PPM * 1.02, V3.E * zHalf + 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 0.15;
+  for (const leg of robot.legs) {
+    const foot = leg.shin.parts[2].position;
+    for (const s of [-1, 1]) {
+      ctx.beginPath();
+      ctx.ellipse(foot.x, V3.BASE - V3.E * s * zHalf, leg.footR, leg.footR * 0.45, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.globalAlpha = 1;
+  // 무게중심 궤적 (중앙 평면 z=0)
+  if (trace.length > 1 && document.getElementById('chkTrace').checked) {
+    ctx.strokeStyle = cssVar('--series-2'); ctx.lineWidth = 2; ctx.setLineDash([1, 5]);
+    ctx.beginPath();
+    trace.forEach((p, i) => { const q = proj3(p.x, hOf(p.y), 0); i ? ctx.lineTo(q.u, q.v) : ctx.moveTo(q.u, q.v); });
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  // 먼 쪽 다리 3개 → 몸통 → 가까운 쪽 다리 3개 (화가 알고리즘)
+  for (const leg of robot.legs) drawLeg3D(leg, zHalf, true);
+  drawBody3D(zHalf);
+  for (const leg of robot.legs) drawLeg3D(leg, -zHalf, false);
+  // 무게중심 마커
+  const c = com();
+  const q = proj3(c.x, hOf(c.y), 0);
+  ctx.strokeStyle = cssVar('--series-1'); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(q.u, q.v, 5, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(q.u - 7, q.v); ctx.lineTo(q.u + 7, q.v); ctx.moveTo(q.u, q.v - 7); ctx.lineTo(q.u, q.v + 7); ctx.stroke();
+  // 체공 중 높이 표시선 (무게중심 → 지면)
+  if (phase === 'flight') {
+    const g0 = proj3(c.x, 0, 0);
+    ctx.strokeStyle = cssVar('--series-1'); ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(q.u, q.v + 7); ctx.lineTo(g0.u, g0.v); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = cssVar('--series-1'); ctx.font = 'bold ' + (11 / camS) + 'px "Inter", "Noto Sans KR", system-ui'; ctx.textAlign = 'left';
+    ctx.fillText(comHeight(c).toFixed(2) + ' m', q.u + 10, (q.v + g0.v) / 2);
+  }
+  ctx.restore();
+}
+
+function drawBody3D(zHalf) {
+  const t = robot.torso;
+  const verts = t.vertices;
+  const P = (vt, z) => proj3(vt.x, hOf(vt.y), z);
+  const bodyC = params.mode === 'insect' ? IC.body : cssVar('--robot-body');
+  // 옆면(윤곽 연결부)
+  ctx.fillStyle = bodyC;
+  for (let i = 0; i < verts.length; i++) {
+    const a = verts[i], b = verts[(i + 1) % verts.length];
+    const pa = P(a, zHalf), pb = P(b, zHalf), pc = P(b, -zHalf), pd = P(a, -zHalf);
+    ctx.beginPath(); ctx.moveTo(pa.u, pa.v); ctx.lineTo(pb.u, pb.v); ctx.lineTo(pc.u, pc.v); ctx.lineTo(pd.u, pd.v);
+    ctx.closePath(); ctx.fill();
+  }
+  // 먼 면(어둡게) → 가까운 면(밝게)
+  const face = (z, overlay, alpha) => {
+    ctx.beginPath();
+    verts.forEach((vt, i) => { const q = P(vt, z); i ? ctx.lineTo(q.u, q.v) : ctx.moveTo(q.u, q.v); });
+    ctx.closePath();
+    ctx.fillStyle = bodyC; ctx.fill();
+    if (overlay) { ctx.globalAlpha = alpha; ctx.fillStyle = overlay; ctx.fill(); ctx.globalAlpha = 1; }
+  };
+  face(zHalf, '#000', 0.22);
+  face(-zHalf, '#fff', 0.14);
+  // 눈 (가까운 면)
+  const eyeX = 0.32 * params.bW * PPM, eyeY = -0.22 * params.bH * PPM;
+  const ex = t.position.x + Math.cos(t.angle) * eyeX - Math.sin(t.angle) * eyeY;
+  const ey = t.position.y + Math.sin(t.angle) * eyeX + Math.cos(t.angle) * eyeY;
+  const pe = proj3(ex, hOf(ey), -zHalf);
+  if (params.mode === 'insect') {
+    ctx.fillStyle = IC.eye; ctx.beginPath(); ctx.ellipse(pe.u, pe.v, 3.5, 4.5, -0.2, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = IC.eyeHi; ctx.beginPath(); ctx.arc(pe.u - 0.8, pe.v - 1.2, 1.2, 0, Math.PI * 2); ctx.fill();
+  } else {
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(pe.u, pe.v, 4.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#0b0b0b'; ctx.beginPath(); ctx.arc(pe.u + 1.5, pe.v, 2.2, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
+// 카메라: 기본 확대(점프가 잘 보이게, 작은 로봇일수록 더 확대), 화면을 벗어나면 자동 축소
+function baseZoom() {
+  let bz = Math.min(10, Math.max(0.6, 1.5 * 25.2 / (standH() * PPM)));
+  if (params.mode === 'insect') {
+    // 실제 메뚜기: 점프가 몸길이의 ~30배라, 처음부터 도약~착지 전체가 화면에 들어오는 배율로 시작
+    bz = Math.min(bz, Math.max(0.4, (W - 120) / (30 * params.bW * PPM)));
+  }
+  return bz;
+}
+let camS = 1.5;
+let userZoom = 1; // 마우스 휠로 조절하는 배율 (1 = 기본)
+function updateCam() {
+  const BZ = baseZoom() * userZoom;
+  let hMax = 0, xMax = 0;
+  for (const b of robot.bodies) {
+    hMax = Math.max(hMax, GROUND_Y - b.bounds.min.y);
+    xMax = Math.max(xMax, b.bounds.max.x);
+  }
+  // 가로 방향: 앵커(로봇) 오른쪽 부분이 화면을 벗어나지 않는 최대 배율 (따라가기 카메라라 대부분 여유)
+  const ax = camAnchorX(), sx = camScreenX();
+  const xFit = xMax > ax + 1 ? (W - 40 - sx) / (xMax - ax) : BZ;
+  let need;
+  if (viewMode === 'iso') {
+    need = Math.min(BZ, (V3.BASE - 26) / Math.max(1, V3.E * hMax), xFit);
+  } else {
+    need = Math.min(BZ, (GROUND_Y - 34) / Math.max(1, hMax), xFit);
+  }
+  const target = Math.max(0.12, need);
+  // 축소(줌아웃)는 빠르게, 확대 복귀는 조금 천천히
+  camS += (target - camS) * (target < camS ? 0.3 : 0.12);
+}
+// 마우스 휠로 확대/축소, 더블클릭으로 원래 배율 복귀
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  userZoom *= Math.exp(-e.deltaY * 0.0014); // 스크롤 양에 비례한 부드러운 확대/축소
+  userZoom = Math.max(0.12, Math.min(10, userZoom));
+  const hint = document.getElementById('zoomHint');
+  hint.textContent = '🔍 배율 ×' + userZoom.toFixed(2) + ' (더블클릭: 원래대로)';
+}, { passive: false });
+canvas.addEventListener('dblclick', () => {
+  userZoom = 1;
+  document.getElementById('zoomHint').textContent = '🖱 마우스 휠: 확대/축소 · 더블클릭: 원래대로';
+});
+// 따라가기 카메라: 확대 기준점(앵커)은 로봇의 무게중심, 화면에서는 왼쪽~60% 지점에 고정
+// → 로봇이 멀리 날아가도 카메라가 옆으로 따라가서 항상 화면 안에 보임
+function camAnchorX() {
+  const c0 = com();
+  return Math.max(c0.x, 50);
+}
+function camScreenX() {
+  return Math.min(camAnchorX(), W * 0.6);
+}
+
+function drawWorldSide() {
+  updateCam();
+  ctx.save();
+  const ax = camAnchorX(), sx = camScreenX();
+  ctx.translate(sx, GROUND_Y); ctx.scale(camS, camS); ctx.translate(-ax, -GROUND_Y);
+  // 화면에 보이는 월드 범위 (줌아웃·카메라 이동 시 확장)
+  const wl = ax - sx / camS - 50, wr = ax + (W - sx) / camS + 50;
+  const wle = ax - sx / camS; // 화면 왼쪽 끝 (라벨 배치용)
+  const wt = GROUND_Y - GROUND_Y / camS - 50;
+  const sky = ctx.createLinearGradient(0, 0, 0, GROUND_Y);
+  sky.addColorStop(0, cssVar('--sky-top')); sky.addColorStop(1, cssVar('--sky-bot'));
+  ctx.fillStyle = sky; ctx.fillRect(wl, wt, wr - wl, GROUND_Y - wt);
+  ctx.fillStyle = cssVar('--ground'); ctx.fillRect(wl, GROUND_Y, wr - wl, (H - GROUND_Y) / camS + 50);
+  ctx.strokeStyle = cssVar('--ground-line'); ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(wl, GROUND_Y); ctx.lineTo(wr, GROUND_Y); ctx.stroke();
+  // 눈금 (확대 정도에 따라 1m 또는 10cm 간격)
+  const stepM = (PPM > 1000) ? 0.05 : (PPM > 200) ? 0.1 : 1;
+  const lenFac = params.mode === 'insect' ? insectLenScale() : 1; // 메뚜기: 실제 크기 눈금으로 표시
+  const lab = i => lenFac !== 1
+    ? (i * stepM * lenFac * 100).toFixed(1) + ' cm'
+    : (stepM < 1 ? Math.round(i * stepM * 100) + ' cm' : (i * stepM) + ' m');
+  const fpx = 10 / camS; // 줌아웃해도 눈금 글자는 화면 기준 같은 크기로
+  ctx.fillStyle = cssVar('--muted'); ctx.font = fpx + 'px "Inter", "Noto Sans KR", system-ui'; ctx.textAlign = 'center';
+  ctx.strokeStyle = cssVar('--grid'); ctx.lineWidth = 1;
+  for (let i = 0; i * stepM * PPM < wr; i++) {
+    const x = i * stepM * PPM;
+    if (x < wl) continue;
+    ctx.beginPath(); ctx.moveTo(x, GROUND_Y); ctx.lineTo(x, GROUND_Y + 6); ctx.stroke();
+    if (i % 2 === 0) ctx.fillText(lab(i), x, GROUND_Y + 6 + fpx * 1.1);
+  }
+  // 높이 눈금
+  ctx.textAlign = 'left';
+  for (let i = 1; GROUND_Y - i * stepM * PPM > wt; i++) {
+    const y = GROUND_Y - i * stepM * PPM;
+    ctx.strokeStyle = cssVar('--grid');
+    ctx.beginPath(); ctx.moveTo(wl, y); ctx.lineTo(wr, y); ctx.stroke();
+    if (i % 2 === 0 || stepM === 1) ctx.fillText(lab(i), wle + 4, y - 3);
+  }
+  // 풀밭 시나리오: 풀 높이(몸길이 5배) 시각화 — 화면(프록시) 좌표 기준으로 비례 표시
+  if (params.scenario === 'grass') {
+    const bodyL = params.bW;
+    const gy = GROUND_Y - 5 * bodyL * PPM;
+    ctx.fillStyle = 'rgba(27,175,122,0.10)';
+    ctx.fillRect(wl, gy, wr - wl, GROUND_Y - gy);
+    ctx.strokeStyle = 'rgba(27,175,122,0.75)'; ctx.lineWidth = 1.5; ctx.setLineDash([6, 4]);
+    ctx.beginPath(); ctx.moveTo(wl, gy); ctx.lineTo(wr, gy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#1baf7a'; ctx.font = 'bold ' + fpx + 'px "Inter", "Noto Sans KR", system-ui'; ctx.textAlign = 'left';
+    ctx.fillText('풀 높이 (몸길이×5)', wle + 6, gy - 5);
+  }
+  // 궤적
+  if (trace.length > 1 && document.getElementById('chkTrace').checked) {
+    ctx.strokeStyle = cssVar('--series-2'); ctx.lineWidth = 2; ctx.setLineDash([1, 5]);
+    ctx.beginPath(); ctx.moveTo(trace[0].x, trace[0].y);
+    for (const p of trace) ctx.lineTo(p.x, p.y);
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+  // 로봇 / 메뚜기
+  if (params.mode === 'insect') {
+    drawGrasshopperSide();
+  } else {
+    const legC = cssVar('--robot-leg'), footC = cssVar('--robot-foot');
+    for (const leg of robot.legs) {
+      drawBody(leg.femur, legC, 4);
+      drawBody(leg.shin.parts[1], legC, 3.5);
+      const f = leg.shin.parts[2];
+      ctx.fillStyle = footC;
+      ctx.beginPath(); ctx.arc(f.position.x, f.position.y, leg.footR, 0, Math.PI * 2); ctx.fill();
+    }
+    drawBody(robot.torso, cssVar('--robot-body'), 9);
+    // 눈 (귀엽게)
+    const t = robot.torso;
+    const eyeX = 0.32 * params.bW * PPM, eyeY = -0.22 * params.bH * PPM;
+    const ex = t.position.x + Math.cos(t.angle) * eyeX - Math.sin(t.angle) * eyeY;
+    const ey = t.position.y + Math.sin(t.angle) * eyeX + Math.cos(t.angle) * eyeY;
+    ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(ex, ey, 4.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#0b0b0b'; ctx.beginPath(); ctx.arc(ex + 1.5, ey, 2.2, 0, Math.PI * 2); ctx.fill();
+  }
+  // COM 마커
+  const c = com();
+  ctx.strokeStyle = cssVar('--series-1'); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(c.x, c.y, 5, 0, Math.PI * 2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(c.x - 7, c.y); ctx.lineTo(c.x + 7, c.y); ctx.moveTo(c.x, c.y - 7); ctx.lineTo(c.x, c.y + 7); ctx.stroke();
+  ctx.restore();
+}
+function drawBody(b, color, r) {
+  const vs = b.vertices;
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.moveTo(vs[0].x, vs[0].y);
+  for (let i = 1; i < vs.length; i++) ctx.lineTo(vs[i].x, vs[i].y);
+  ctx.closePath(); ctx.fill();
+}
+
+// ---------- 실제 메뚜기 그리기 (사진 기반: 초록 몸통·갈색 정강이·굵은 넓적다리) ----------
+const IC = {
+  femur: '#6b9c2f', femurHi: '#8fbc45', femurFar: '#557d22',
+  tibia: '#a3562a', tibiaFar: '#7c3f1d', tarsus: '#5f3418',
+  body: '#7aa832', bodyDark: '#4a7218', pronotum: '#5d8a27',
+  wing: '#b39463', wingVein: '#8a6f45', eye: '#3a2712', eyeHi: '#e8d9a8',
+};
+// 양 끝 두께가 다른 다리 마디 (넓적다리는 닭다리처럼 굵고, 정강이는 가늘게)
+function taperSeg(p1, p2, w1, w2, color) {
+  const dx = p2.x - p1.x, dy = p2.y - p1.y;
+  const L = Math.hypot(dx, dy) || 1;
+  const nx = -dy / L, ny = dx / L;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(p1.x + nx * w1 / 2, p1.y + ny * w1 / 2);
+  ctx.lineTo(p2.x + nx * w2 / 2, p2.y + ny * w2 / 2);
+  ctx.lineTo(p2.x - nx * w2 / 2, p2.y - ny * w2 / 2);
+  ctx.lineTo(p1.x - nx * w1 / 2, p1.y - ny * w1 / 2);
+  ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.arc(p1.x, p1.y, w1 / 2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(p2.x, p2.y, w2 / 2, 0, Math.PI * 2); ctx.fill();
+}
+
+function drawInsectLeg(leg, far) {
+  const { hip, knee, foot } = legJoints(leg);
+  ctx.save();
+  if (far) ctx.globalAlpha = 0.55;
+  const rear = leg.type === 'rear';
+  // 넓적다리(femur): 뒷다리는 몸쪽이 굵고 무릎쪽으로 가늘어지는 닭다리 모양
+  const wF = rear ? Math.max(4, leg.L1 * 0.20) : Math.max(2, leg.L1 * 0.11);
+  const wK = rear ? Math.max(2, leg.L1 * 0.07) : Math.max(1.5, leg.L1 * 0.08);
+  taperSeg(hip, knee, wF, wK, far ? IC.femurFar : IC.femur);
+  if (rear && !far) {
+    // 넓적다리 윗면 하이라이트 (사진 속 인(人)자 무늬 느낌)
+    const mx = (hip.x + knee.x) / 2, my = (hip.y + knee.y) / 2;
+    taperSeg({ x: (hip.x + mx) / 2, y: (hip.y + my) / 2 }, { x: (mx + knee.x) / 2, y: (my + knee.y) / 2 },
+      wF * 0.35, wK * 0.6, IC.femurHi);
+  }
+  // 정강이(tibia): 가늘고 불그스름한 갈색
+  const wT = rear ? Math.max(1.4, leg.L2 * 0.055) : Math.max(1.2, leg.L2 * 0.07);
+  taperSeg(knee, foot, wT * 1.3, wT * 0.75, far ? IC.tibiaFar : IC.tibia);
+  // 부절/발바닥(tarsus): 지면에 납작하게 눕는 마디 (평활화된 좌표로 그림)
+  const pad = leg.tars || leg.shin.parts[3];
+  const dim = leg.tars ? leg.tarsDim : leg.padDim;
+  if (pad && dim) {
+    const sp = vs(pad);
+    ctx.save();
+    ctx.translate(sp.x, sp.y); ctx.rotate(sp.a);
+    ctx.fillStyle = IC.tarsus;
+    ctx.beginPath(); ctx.roundRect(-dim.w / 2, -dim.h / 2, dim.w, dim.h, dim.h / 2); ctx.fill();
+    ctx.restore();
+  } else {
+    // 뒷다리: 발끝에 붙은 짧은 발목마디
+    const dx = foot.x - knee.x, dy = foot.y - knee.y;
+    const L = Math.hypot(dx, dy) || 1;
+    const tip = { x: foot.x + dx / L * Math.max(2, leg.footR * 2.4), y: foot.y + dy / L * Math.max(2, leg.footR * 2.4) };
+    taperSeg(foot, tip, Math.max(1.2, wT), 0.8, IC.tarsus);
+  }
+  ctx.restore();
+}
+
+function drawGrasshopperSide() {
+  const rearLeg = robot.legs.find(l => l.type === 'rear');
+  // 반대편(먼 쪽) 다리들 → 몸통 → 이쪽 다리들 (뒷다리 넓적다리가 배 옆에 겹쳐 보이도록)
+  for (const leg of robot.legs) drawInsectLeg(leg, true);
+  drawInsectBodySide();
+  for (const leg of robot.legs) if (leg !== rearLeg) drawInsectLeg(leg, false);
+  drawInsectLeg(rearLeg, false);
+}
+
+function drawInsectBodySide() {
+  const t = robot.torso, st = vs(t);
+  const W2 = params.bW * PPM / 2, Hh = params.bH * PPM / 2;
+  ctx.save();
+  ctx.translate(st.x, st.y);
+  ctx.rotate(st.a);
+  // 몸통 윤곽: 머리(앞) + 가슴 + 뒤로 갈수록 뾰족한 배
+  ctx.fillStyle = IC.body;
+  ctx.strokeStyle = IC.bodyDark; ctx.lineWidth = Math.max(0.8, Hh * 0.08);
+  ctx.beginPath();
+  ctx.moveTo(-W2 * 1.02, -Hh * 0.15);                                              // 배 끝
+  ctx.bezierCurveTo(-W2 * 0.5, -Hh * 1.0, W2 * 0.15, -Hh * 1.05, W2 * 0.62, -Hh * 0.9); // 등선
+  ctx.bezierCurveTo(W2 * 0.92, -Hh * 0.8, W2 * 1.02, -Hh * 0.15, W2 * 0.92, Hh * 0.4);  // 머리 앞면
+  ctx.bezierCurveTo(W2 * 0.78, Hh * 0.9, W2 * 0.35, Hh * 1.0, 0, Hh * 0.85);            // 가슴 아래
+  ctx.bezierCurveTo(-W2 * 0.5, Hh * 0.6, -W2 * 0.85, Hh * 0.15, -W2 * 1.02, -Hh * 0.15);// 배 아래
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  // 배 마디 줄무늬
+  ctx.strokeStyle = IC.bodyDark; ctx.globalAlpha = 0.35; ctx.lineWidth = Math.max(0.6, Hh * 0.05);
+  for (let i = 1; i <= 4; i++) {
+    const x = -W2 * (0.05 + i * 0.2);
+    ctx.beginPath(); ctx.moveTo(x, -Hh * 0.55); ctx.quadraticCurveTo(x - Hh * 0.18, 0, x, Hh * 0.5); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  // 날개: 등 위에서 배 끝 너머까지 덮는 갈색 날개
+  ctx.fillStyle = IC.wing; ctx.globalAlpha = 0.88;
+  ctx.beginPath();
+  ctx.moveTo(W2 * 0.4, -Hh * 0.85);
+  ctx.bezierCurveTo(-W2 * 0.3, -Hh * 1.08, -W2 * 0.95, -Hh * 0.75, -W2 * 1.3, -Hh * 0.1);
+  ctx.bezierCurveTo(-W2 * 0.8, -Hh * 0.28, -W2 * 0.1, -Hh * 0.22, W2 * 0.32, -Hh * 0.38);
+  ctx.closePath(); ctx.fill();
+  ctx.globalAlpha = 0.7;
+  ctx.strokeStyle = IC.wingVein; ctx.lineWidth = Math.max(0.5, Hh * 0.04);
+  ctx.beginPath(); ctx.moveTo(W2 * 0.32, -Hh * 0.6); ctx.quadraticCurveTo(-W2 * 0.45, -Hh * 0.72, -W2 * 1.22, -Hh * 0.16); ctx.stroke();
+  ctx.globalAlpha = 1;
+  // 앞가슴등판(pronotum): 목 뒤 안장 모양, 조금 진한 초록
+  ctx.fillStyle = IC.pronotum;
+  ctx.beginPath();
+  ctx.moveTo(W2 * 0.32, -Hh * 0.98);
+  ctx.bezierCurveTo(W2 * 0.56, -Hh * 1.08, W2 * 0.7, -Hh * 0.85, W2 * 0.66, -Hh * 0.35);
+  ctx.lineTo(W2 * 0.6, Hh * 0.45);
+  ctx.bezierCurveTo(W2 * 0.48, Hh * 0.55, W2 * 0.36, Hh * 0.4, W2 * 0.33, Hh * 0.05);
+  ctx.closePath(); ctx.fill();
+  // 겹눈: 머리 위쪽의 큰 타원 눈
+  ctx.fillStyle = IC.eye;
+  ctx.beginPath(); ctx.ellipse(W2 * 0.8, -Hh * 0.42, Hh * 0.28, Hh * 0.38, -0.25, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = IC.eyeHi; ctx.globalAlpha = 0.85;
+  ctx.beginPath(); ctx.arc(W2 * 0.78, -Hh * 0.52, Hh * 0.1, 0, Math.PI * 2); ctx.fill();
+  ctx.globalAlpha = 1;
+  // 더듬이 2개
+  ctx.strokeStyle = IC.bodyDark; ctx.lineWidth = Math.max(0.7, Hh * 0.06); ctx.lineCap = 'round';
+  for (const dy of [0, Hh * 0.14]) {
+    ctx.beginPath();
+    ctx.moveTo(W2 * 0.86, -Hh * 0.6 + dy);
+    ctx.quadraticCurveTo(W2 * 1.2, -Hh * 1.5 + dy, W2 * 1.5, -Hh * 2.0 + dy * 1.5);
+    ctx.stroke();
+  }
+  // 입 부분(작고 어두운 큰턱)
+  ctx.fillStyle = IC.tarsus;
+  ctx.beginPath(); ctx.ellipse(W2 * 0.86, Hh * 0.5, Hh * 0.14, Hh * 0.2, 0.3, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+
+// ---------- 차트 ----------
+const chart = document.getElementById('chart');
+const cctx = chart.getContext('2d');
+const tooltip = document.getElementById('tooltip');
+const CM = { l: 46, r: 14, t: 12, b: 28 };
+
+function chartBounds() {
+  let tMax = 1, hMax = 0.25;
+  for (const s of series) for (const p of s.pts) { tMax = Math.max(tMax, p.t); hMax = Math.max(hMax, p.h); }
+  return { tMax: Math.ceil(tMax * 2) / 2, hMax: Math.ceil(hMax * 4) / 4 + 0.25 };
+}
+function drawChart() {
+  const w = chart.width, h = chart.height;
+  cctx.clearRect(0, 0, w, h);
+  const { tMax, hMax } = chartBounds();
+  const px = t => CM.l + (t / tMax) * (w - CM.l - CM.r);
+  const py = v => h - CM.b - (v / hMax) * (h - CM.t - CM.b);
+  cctx.font = '11px "Inter", "Noto Sans KR", system-ui';
+  // 그리드
+  cctx.strokeStyle = cssVar('--grid'); cctx.fillStyle = cssVar('--muted'); cctx.lineWidth = 1;
+  const hStep = hMax > 2 ? 0.5 : (hMax > 0.8 ? 0.25 : 0.1);
+  for (let v = 0; v <= hMax + 1e-9; v += hStep) {
+    cctx.beginPath(); cctx.moveTo(CM.l, py(v)); cctx.lineTo(w - CM.r, py(v)); cctx.stroke();
+    cctx.textAlign = 'right'; cctx.fillText(v.toFixed(2), CM.l - 6, py(v) + 4);
+  }
+  const tStep = tMax > 4 ? 1 : 0.5;
+  cctx.textAlign = 'center';
+  for (let tv = 0; tv <= tMax + 1e-9; tv += tStep) cctx.fillText(tv.toFixed(1) + 's', px(tv), h - CM.b + 16);
+  cctx.strokeStyle = cssVar('--baseline');
+  cctx.beginPath(); cctx.moveTo(CM.l, py(0)); cctx.lineTo(w - CM.r, py(0)); cctx.stroke();
+  // 시리즈 (이전: 회색, 최근: series-1)
+  series.forEach((s, i) => {
+    if (s.pts.length < 2) return;
+    const last = i === series.length - 1;
+    cctx.strokeStyle = last ? cssVar('--series-1') : cssVar('--baseline');
+    cctx.lineWidth = 2;
+    cctx.beginPath();
+    s.pts.forEach((p, j) => j ? cctx.lineTo(px(p.t), py(p.h)) : cctx.moveTo(px(p.t), py(p.h)));
+    cctx.stroke();
+  });
+  chart._map = { px, py, tMax, hMax };
+}
+chart.addEventListener('mousemove', e => {
+  const s = series[series.length - 1];
+  if (!s || s.pts.length < 2 || !chart._map) { tooltip.style.display = 'none'; return; }
+  const rect = chart.getBoundingClientRect();
+  const mx = (e.clientX - rect.left) * (chart.width / rect.width);
+  let best = null, bd = 1e9;
+  for (const p of s.pts) { const d = Math.abs(chart._map.px(p.t) - mx); if (d < bd) { bd = d; best = p; } }
+  if (!best || bd > 30) { tooltip.style.display = 'none'; return; }
+  tooltip.style.display = 'block';
+  tooltip.style.left = (chart._map.px(best.t) / chart.width * rect.width + 10) + 'px';
+  tooltip.style.top = (chart._map.py(best.h) / chart.height * rect.height - 10) + 'px';
+  tooltip.textContent = `t=${best.t.toFixed(2)}s · 높이 ${best.h.toFixed(2)}m · 이동 ${best.x.toFixed(2)}m`;
+});
+chart.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+
+// ---------- 결과 표시 ----------
+function fmt(v, d = 2) { return Number(v).toFixed(d); }
+function renderTiles(r) {
+  // 화면 위 결과 요약(HUD): 스크롤 없이 바로 확인
+  {
+    const ins2 = r.mode === 'insect';
+    const L = x => ins2 ? (x * 100).toFixed(1) + ' cm' : x.toFixed(2) + ' m';
+    const hud = document.getElementById('hud');
+    hud.style.display = '';
+    const item = (k, v) => '<span style="white-space:nowrap; margin-right:18px;">' + k + ' <b style="color:var(--text-primary); font-size:14px;">' + v + '</b></span>';
+    hud.innerHTML =
+      '<div><b style="color:var(--text-primary); margin-right:18px;">' + r.n + '회차</b>' +
+        item('도약 거리', L(r.d)) + item('최고 높이', L(r.h)) + item('이륙 속도', r.v.toFixed(2) + ' m/s') + '</div>' +
+      '<div>' + item('이륙각', r.angle.toFixed(0) + '°') + item('체공 시간', r.air.toFixed(2) + ' s') +
+        '<span style="color:var(--muted);">자세한 값은 아래 표</span></div>';
+  }
+  const ins = r.mode === 'insect'; // 실제 메뚜기: cm·mN 단위로 표시
+  const len = x => ins ? fmt(x * 100, 1) + '<span class="u">cm</span>' : fmt(x) + '<span class="u">m</span>';
+  document.getElementById('t_h').innerHTML = len(r.h);
+  document.getElementById('t_d').innerHTML = len(r.d);
+  document.getElementById('t_air').innerHTML = fmt(r.air) + '<span class="u">s</span>';
+  document.getElementById('t_v').innerHTML = fmt(r.v) + '<span class="u">m/s</span>';
+  document.getElementById('t_th').innerHTML = fmt(r.angle, 1) + '<span class="u">°</span>';
+  document.getElementById('t_eff').innerHTML = fmt(r.eff, 1) + '<span class="u">%</span>';
+  document.getElementById('t_F').innerHTML = ins ? fmt(r.peakF * 1000, 0) + '<span class="u">mN</span>' : fmt(r.peakF, 0) + '<span class="u">N</span>';
+  document.getElementById('t_P').innerHTML = fmt(r.press, 2) + '<span class="u">N/cm²</span>';
+  document.getElementById('t_fit').innerHTML = (r.fit == null ? '–' : fmt(r.fit, 0)) + '<span class="u">/100</span>';
+}
+function renderTable() {
+  const tb = document.querySelector('#logTable tbody');
+  tb.innerHTML = trials.map(r =>
+    `<tr><td>${r.n}</td><td>${r.mode === 'catapult' ? '투석기' : r.mode === 'physical' ? '실물' : r.mode === 'insect' ? '메뚜기' : '모터'}</td><td>${fmt(r.g,1)}</td><td>${fmt(r.m,1)}</td><td>${r.rF != null ? Math.round(r.rF*100) + '/' + Math.round(r.rT*100) : '-'}</td><td>${r.k}</td><td>${r.tau}</td><td>${r.ang}</td><td>${fmt(r.fr,2)}</td>` +
+    `<td><b>${fmt(r.h)}</b></td><td><b>${fmt(r.d)}</b></td><td>${fmt(r.air)}</td><td>${fmt(r.v)}</td><td>${fmt(r.eff,1)}</td><td>${fmt(r.press ?? 0,2)}</td><td>${r.fit == null ? '–' : fmt(r.fit,0)}</td></tr>`
+  ).join('');
+}
+document.getElementById('btnCsv').addEventListener('click', () => {
+  const head = 'trial,mode,gravity_g,mass_kg,rear_femur_cm,rear_tibia_cm,mid_femur_cm,mid_tibia_cm,front_femur_cm,front_tibia_cm,foot_diameter_cm,body_length_cm,body_height_cm,body_depth_cm,stiffness_Nm_rad,max_torque_Nm,jump_angle_deg,friction,height_m,distance_m,air_time_s,takeoff_speed_ms,takeoff_angle_deg,efficiency_pct,peak_force_N,contact_pressure_N_cm2,n_rubber_bands,pull_length_cm,scenario,fitness_score';
+  const cm = x => Math.round((x ?? 0) * 1000) / 10;
+  const rows = trials.map(r => [r.n, r.mode ?? 'motor', r.g, r.m, cm(r.rF ?? 0.35), cm(r.rT ?? 0.45), cm(r.mF), cm(r.mT), cm(r.fF), cm(r.fT), cm(r.footD ?? 0.1), cm(r.bW ?? 0.62), cm(r.bH ?? 0.26), cm(r.bD ?? 0.2), r.k, r.tau, r.ang, r.fr, fmt(r.h,3), fmt(r.d,3), fmt(r.air,3), fmt(r.v,3), fmt(r.angle,1), fmt(r.eff,1), fmt(r.peakF ?? 0,1), fmt(r.press ?? 0,3), r.mode === 'physical' ? r.nBands : '', r.mode === 'physical' ? r.pullCm : '', r.scen ?? 'none', r.fit == null ? '' : fmt(r.fit, 1)].join(','));
+  const blob = new Blob(['﻿' + head + '\n' + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'jump_experiments.csv'; a.click();
+});
+document.getElementById('btnClear').addEventListener('click', () => { trials.length = 0; trialNum = 0; renderTable(); });
+
+// ---------- 슬라이더 ----------
+function bindSlider(id, key, fmtFn, rebuild) {
+  const el = document.getElementById('s_' + id), lab = document.getElementById('v_' + id);
+  el.addEventListener('input', () => {
+    params[key] = parseFloat(el.value);
+    lab.textContent = fmtFn(params[key]);
+    if (key === 'g') engine.gravity.y = gravityY();
+    if (key === 'friction') for (const b of Composite.allBodies(engine.world)) if (b.label === 'ground' || b.label === 'shin') { b.friction = params.friction; if (b.parts) b.parts.forEach(p => p.friction = params.friction); }
+    if (rebuild && (phase === 'idle' || phase === 'landed')) reset(false);
+  });
+}
+bindSlider('g', 'g', v => fmt(v, 1) + ' g');
+bindSlider('m', 'mass', v => fmt(v, 1) + ' kg', true);
+bindSlider('k', 'k', v => v + ' N·m/rad');
+bindSlider('tau', 'tauMax', v => v + ' N·m');
+bindSlider('ang', 'jumpAng', v => v + '°');
+bindSlider('fr', 'friction', v => fmt(v, 2));
+// 다리·몸통 치수 입력칸 (입력은 cm, 내부 계산은 m)
+for (const [id, key, lo, hi] of [
+  ['n_rF', 'rF', 1, 100], ['n_rT', 'rT', 1, 100],
+  ['n_fF', 'fF', 1, 100], ['n_fT', 'fT', 1, 100],
+  ['n_mF', 'mF', 1, 100], ['n_mT', 'mT', 1, 100],
+  ['n_bW', 'bW', 30, 120], ['n_bH', 'bH', 10, 50], ['n_bD', 'bD', 5, 50],
+  ['n_foot', 'footD', 2, 20],
+]) {
+  const el = document.getElementById(id);
+  el.addEventListener('change', () => {
+    let v = parseFloat(el.value);
+    if (!isFinite(v)) v = params[key] * 100;
+    v = Math.max(lo, Math.min(hi, v));
+    el.value = v; params[key] = v / 100;
+    if (phase === 'idle' || phase === 'landed') reset(false);
+  });
+}
+
+document.getElementById('btnJump').addEventListener('click', startJump);
+document.getElementById('btnJumpTop').addEventListener('click', startJump);
+document.getElementById('btnResetTop').addEventListener('click', () => reset(true));
+// 전체 화면 전환 (지원되지 않는 환경에서는 조용히 무시)
+document.getElementById('btnFull').addEventListener('click', () => {
+  const el = document.documentElement;
+  if (document.fullscreenElement) { document.exitFullscreen && document.exitFullscreen(); return; }
+  const fn = el.requestFullscreen || el.webkitRequestFullscreen;
+  if (fn) { try { fn.call(el); } catch (e) {} }
+  else alert('이 환경에서는 전체 화면이 지원되지 않아요. 링크를 사파리/크롬 새 탭에서 열면 크게 볼 수 있어요.');
+});
+const syncFs = () => document.body.classList.toggle('fs', !!(document.fullscreenElement || document.webkitFullscreenElement));
+document.addEventListener('fullscreenchange', syncFs);
+document.addEventListener('webkitfullscreenchange', syncFs);
+// 단축키: 스페이스 = 점프, R = 리셋 (입력칸에 타이핑 중일 때는 제외)
+document.addEventListener('keydown', e => {
+  if (e.code !== 'Space' && e.code !== 'KeyR') return;
+  const tag = (document.activeElement && document.activeElement.tagName) || '';
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+  e.preventDefault();
+  if (e.code === 'Space') startJump();
+  else reset(true);
+});
+document.getElementById('btnReset').addEventListener('click', () => reset(true));
+// 뷰 전환
+for (const [id, mode] of [['btnViewSide', 'side'], ['btnViewIso', 'iso']]) {
+  document.getElementById(id).addEventListener('click', () => {
+    viewMode = mode;
+    document.getElementById('btnViewSide').classList.toggle('active', mode === 'side');
+    document.getElementById('btnViewIso').classList.toggle('active', mode === 'iso');
+  });
+}
+function syncInputs() {
+  const map = { n_rF: 'rF', n_rT: 'rT', n_fF: 'fF', n_fT: 'fT', n_mF: 'mF', n_mT: 'mT',
+    n_bW: 'bW', n_bH: 'bH', n_bD: 'bD', n_foot: 'footD' };
+  for (const [id, key] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (el) el.value = Math.round(params[key] * 1000) / 10;
+  }
+}
+// 실제 메뚜기 프리셋 (역학적 상사): 실측 비율을 몸길이 62cm 프록시로 확대해 구성.
+// 결과는 상사 법칙으로 실제 크기로 환산: 길이 ×(iBL/0.62), 속도·시간 ×√(iBL/0.62)
+const PROXY_L = 0.62;
+function insectSF() { return PROXY_L / params.iBL; }        // 확대 배율
+function insectLenScale() { return params.iBL / PROXY_L; }  // 결과 환산 (길이)
+function applyInsectPreset() {
+  const SF = insectSF();
+  params.mass = 2.1; // 프록시 몸통 질량 (다리 포함 총 ~2.59kg)
+  params.bW = PROXY_L; params.bH = 0.27 * PROXY_L; params.bD = 0.20 * PROXY_L;
+  params.rF = params.irF * SF; params.rT = params.irT * SF; // 실측 다리 비율 유지
+  params.mF = 0.21 * PROXY_L; params.mT = 0.25 * PROXY_L;
+  params.fF = 0.17 * PROXY_L; params.fT = 0.20 * PROXY_L;
+  params.footD = 0.08 * PROXY_L;
+}
+// ---------- 구동 방식: 실제 메뚜기 단일 모드 (v28) ----------
+// 모터·투석기·실물 모형 모드의 UI와 전환 코드는 v28에서 제거했습니다.
+// 백업: 프로젝트 문서 '구동방식-코드-백업-v27.md' 및 grasshopper_robot_sim_v27.html
+setScale(70);           // 메뚜기 모드: SUBSTEPS 64 (빠른 방출의 에너지 손실 방지)
+applyInsectPreset();
+syncInputs();
+// 실제 메뚜기 실측값 입력칸
+for (const [id, key, lo, hi, scale] of [
+  ['n_iBL', 'iBL', 10, 80, 1000], ['n_iM', 'iMass', 0.2, 8, 1000],
+  ['n_irF', 'irF', 4, 40, 1000], ['n_irT', 'irT', 4, 40, 1000], ['n_iE', 'iE', 1, 80, 1000],
+]) {
+  document.getElementById(id).addEventListener('change', e => {
+    let v = parseFloat(e.target.value);
+    if (!isFinite(v)) v = params[key] * scale;
+    v = Math.max(lo, Math.min(hi, v));
+    e.target.value = v; params[key] = v / scale;
+    if (params.mode === 'insect') {
+      applyInsectPreset();
+      document.getElementById('v_m').textContent = (params.iMass * 1000).toFixed(1) + ' g (실측값)';
+      if (phase === 'idle' || phase === 'landed') reset(false);
+    }
+  });
+}
+// 서식지 시나리오
+const SCEN_INFO = {
+  none:     { fr: null, note: '시나리오를 고르면 지면 조건이 바뀌고, 점프마다 적합도 점수(0~100)가 계산됩니다.' },
+  grass:    { fr: 0.8,  note: '풀밭: 몸길이 5배 높이의 풀을 넘고 멀리 가야 함. 점수 = 50×min(1, 높이/풀높이) + 50×min(1, 거리/몸길이10배). 마찰 0.8' },
+  sand:     { fr: 0.45, note: '모래밭: 미끄럽고(마찰 0.45), 접지 압력이 3 N/cm²를 넘으면 발이 빠져 감점(×0.5). 점수 = 100×min(1, 거리/몸길이10배)×압력벌점' },
+  predator: { fr: 1.0,  note: '포식 회피: 빠르게 벗어나는 것이 생존. 점수 = 100×min(1, 이륙속도/기준속도), 기준속도 = 5.5×√(g×몸길이)' },
+  economy:  { fr: 1.0,  note: '에너지 절약: 적은 에너지로 멀리. 점수 = 100×min(1, 몸무게×g×거리 ÷ 입력에너지)' },
+};
+for (const btn of document.querySelectorAll('.sc')) {
+  btn.addEventListener('click', () => {
+    params.scenario = btn.dataset.sc;
+    document.querySelectorAll('.sc').forEach(b => b.classList.toggle('active', b === btn));
+    const info = SCEN_INFO[params.scenario];
+    if (info.fr !== null) {
+      params.friction = info.fr;
+      document.getElementById('s_fr').value = info.fr;
+      document.getElementById('v_fr').textContent = fmt(info.fr, 2);
+      for (const b of Composite.allBodies(engine.world)) if (b.label === 'ground' || b.label === 'shin') { b.friction = params.friction; if (b.parts) b.parts.forEach(p => p.friction = params.friction); }
+    }
+  });
+}
+
+function reset(clearTrace) {
+  Engine.clear(engine || {});
+  makeEngine();
+  if (clearTrace) { trace = []; }
+  jump = null; frozen = false; setPhase('idle');
+}
+
+// ---------- 메인 루프 ----------
+let acc = 0, lastTs = 0;
+function loop(ts) {
+  requestAnimationFrame(loop);
+  if (!lastTs) lastTs = ts;
+  let dt = Math.min(50, ts - lastTs); lastTs = ts;
+  const slow = document.getElementById('chkSlow').checked ? 0.25 : 1;
+  acc += dt * slow;
+  const frame = 1000 / FPS;
+  let steps = 0;
+  while (acc >= frame && steps < 4) { physicsTick(); acc -= frame; steps++; }
+  drawWorld();
+  if (jump) drawChart();
+}
+
+makeEngine();
+setPhase('idle');
+drawChart();
+requestAnimationFrame(loop);
+
+// ---------- 앱(PWA): 오프라인 캐시 등록 ----------
+if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
+}
+
+// ---------- 테스트/자동화용 훅 ----------
+window.__sim = {
+  get phase() { return phase; },
+  get trials() { return trials; },
+  params, com, comVel, comHeight, feetOnGround,
+  jump: startJump, reset: () => reset(true),
+  setParam(key, val) {
+    params[key] = val;
+    if (key === 'g') engine.gravity.y = gravityY();
+    reset(false);
+  },
+  advance(sec) { // 헤드리스 테스트용: 렌더 없이 물리만 진행
+    const frames = Math.round(sec * FPS);
+    for (let i = 0; i < frames; i++) { physicsTick(); updateCam(); }
+    drawWorld(); drawChart();
+  },
+  get engine() { return engine; },
+  get robot() { return robot; },
+  get scaleInfo() { return { PPM, SUBSTEPS, DT_MS, TQ }; },
+  get jumpState() { return jump; },
+  absAngle,
+  get lastTrial() { return trials[trials.length - 1]; },
+  TUNE,
+};
+</script>
+</body>
+</html>
