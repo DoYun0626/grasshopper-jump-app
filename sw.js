@@ -1,6 +1,6 @@
 // 메뚜기 점프 시뮬레이터 — 오프라인 캐시 (v36)
-const CACHE = 'grasshopper-sim-v36b';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
+const CACHE = 'grasshopper-sim-v36c';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-maskable-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
