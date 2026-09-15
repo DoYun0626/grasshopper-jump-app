@@ -177,9 +177,31 @@
   #physBox .sec-t::before { background: var(--amber); }
   .controls .dimgrid input, .controls .ctl label b { font-family: "JetBrains Mono", ui-monospace, monospace; }
   .controls .dimgrid input { background: var(--surface-1); border: 1px solid var(--baseline); }
+  #resultsBanner, #backExp {
+    display: none; position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 60;
+    padding: 13px 26px; border-radius: 26px; font-size: 14.5px; font-weight: 700;
+    border: none; box-shadow: 0 4px 14px rgba(15,23,42,0.28); cursor: pointer;
+  }
+  #resultsBanner { background: var(--accent-dark); color: #fff; }
+  #backExp { background: var(--surface-1); color: var(--text-primary); border: 1px solid var(--baseline); }
   @media (max-width: 900px) {
-    .layout { grid-template-columns: 1fr; grid-template-areas: "head" "sim" "tiles" "chart" "ctl" "log"; }
-    .tiles { grid-template-columns: repeat(3, 1fr); }
+    /* 모바일: 실험 화면(시뮬레이션+제어판)과 결과 화면을 분리 */
+    .layout { grid-template-columns: 1fr; grid-template-areas: "head" "sim" "ctl" "tiles" "chart" "log"; }
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    body:not(.m-results) .full.tiles, body:not(.m-results) #chartCard, body:not(.m-results) #logCard { display: none; }
+    body.m-results #simCard, body.m-results .card.controls { display: none; }
+    .tile .v { font-size: 22px; }
+    /* 표가 화면 폭을 밀어내지 않도록 카드 안에서 가로 스크롤 */
+    #logCard { overflow-x: auto; }
+    #logCard table { min-width: 700px; }
+    /* 작은 캔버스를 가리는 요소 정리 */
+    #hud { display: none !important; }
+    #zoomHint { display: none; }
+    /* 점프·리셋 버튼을 캔버스 아래 일반 배치로 */
+    #btnResetTop, #btnJumpTop { position: static !important; margin-top: 8px; }
+    #btnJumpTop { width: 60%; float: right; }
+    #btnResetTop { width: 36%; }
   }
   /* 전체 화면: 같은 3분할 배치를 화면 전체 폭으로 확장 */
   body.fs .layout { max-width: none; }
@@ -187,9 +209,11 @@
 </style>
 </head>
 <body class="viz-root">
+<button id="resultsBanner">📊 결과 확인하기</button>
+<button id="backExp">← 실험으로 돌아가기</button>
 <div class="layout">
   <div class="full hero">
-    <h1><span class="logo">🦗</span>메뚜기형 점프 로봇 시뮬레이터 <span class="phase-badge" id="phaseBadge">대기</span> <span style="font-size:11px; font-weight:500; color:var(--muted); border:1px solid var(--border); border-radius:10px; padding:2px 8px; vertical-align:middle;">v36 · 앱판</span></h1>
+    <h1><span class="logo">🦗</span>메뚜기형 점프 로봇 시뮬레이터 <span class="phase-badge" id="phaseBadge">대기</span> <span style="font-size:11px; font-weight:500; color:var(--muted); border:1px solid var(--border); border-radius:10px; padding:2px 8px; vertical-align:middle;">v37 · 기준값판</span></h1>
     <div class="sub">실제 메뚜기의 신체 치수와 저장 에너지를 기반으로 점프 성능을 분석합니다.</div>
   </div>
 
@@ -214,10 +238,10 @@
       <div class="sec-t">실제 메뚜기 실측값</div>
       <div class="dimgrid">
         <span>몸길이(mm)</span><input type="number" id="n_iBL" min="10" max="80" step="1" value="33">
-        <span>몸무게(g)</span><input type="number" id="n_iM" min="0.2" max="8" step="0.1" value="0.4">
+        <span>몸무게(g)</span><input type="number" id="n_iM" min="0.2" max="8" step="0.1" value="2">
         <span>허벅지(mm)</span><input type="number" id="n_irF" min="4" max="40" step="0.5" value="16">
         <span>종아리(mm)</span><input type="number" id="n_irT" min="4" max="40" step="0.5" value="15">
-        <span>저장 에너지(mJ)</span><input type="number" id="n_iE" min="1" max="80" step="1" value="8">
+        <span>저장 에너지(mJ)</span><input type="number" id="n_iE" min="1" max="80" step="1" value="40">
         <span></span>
       </div>
     </div>
@@ -342,7 +366,7 @@ const params = {
   g: 1, mass: 2, k: 110, tauMax: 30, jumpAng: 15, friction: 1,
   nBands: 2, pullCm: 8, // 실물 모형: 고무줄 개수, 당김 길이(cm)
   // 실제 메뚜기 모드: 실측값 입력 (몸길이 m, 몸무게 kg, 다리 m, 저장 에너지 J)
-  iBL: 0.033, iMass: 0.0004, irF: 0.016, irT: 0.015, iE: 0.008, // 벼메뚜기(성체 30~38mm) 기준
+  iBL: 0.033, iMass: 0.002, irF: 0.016, irT: 0.015, iE: 0.040, // 기준 실험 조건: 몸무게 2g·저장 에너지 40mJ (사막메뚜기 검증 조건)
   scenario: 'none', // 서식지 시나리오: none | grass | sand | predator | economy
   // 다리 허벅지(F)·종아리(T) 길이 (m, 내부 단위) — 입력은 cm
   rF: 0.35, rT: 0.45, fF: 0.18, fT: 0.22, mF: 0.20, mT: 0.25,
@@ -925,6 +949,7 @@ function controlStep() {
 // ---------- 점프 시퀀스 ----------
 function startJump() {
   if (phase !== 'idle' && phase !== 'landed') return;
+  hideResultsBanner();
   // 정지 상태(실물 모형 착지 후)면 처음 위치로 리셋 후 시작
   if (frozen) { frozen = false; reset(false); }
   // 넘어져 있으면 자동으로 제자리 리셋 후 시작
@@ -1143,6 +1168,7 @@ function finishJump(success) {
     };
     trials.push(row);
     renderTiles(row); renderTable();
+    showResultsBanner();
   } else if (!success) {
     document.getElementById('t_h').innerHTML = '이륙 실패<span class="u"></span>';
     const hud = document.getElementById('hud');
@@ -1798,6 +1824,32 @@ document.getElementById('btnFull').addEventListener('click', () => {
   const fn = el.requestFullscreen || el.webkitRequestFullscreen;
   if (fn) { try { fn.call(el); } catch (e) {} }
   else alert('이 환경에서는 전체 화면이 지원되지 않아요. 링크를 사파리/크롬 새 탭에서 열면 크게 볼 수 있어요.');
+});
+// ---------- 모바일: 실험/결과 화면 전환 ----------
+const isMobileView = () => window.matchMedia('(max-width: 900px)').matches;
+function showResultsBanner() {
+  if (!isMobileView() || document.body.classList.contains('m-results')) return;
+  document.getElementById('resultsBanner').style.display = 'block';
+}
+function hideResultsBanner() { document.getElementById('resultsBanner').style.display = 'none'; }
+document.getElementById('resultsBanner').addEventListener('click', () => {
+  document.body.classList.add('m-results');
+  hideResultsBanner();
+  document.getElementById('backExp').style.display = 'block';
+  window.scrollTo(0, 0);
+});
+document.getElementById('backExp').addEventListener('click', () => {
+  document.body.classList.remove('m-results');
+  document.getElementById('backExp').style.display = 'none';
+  if (trials.length) showResultsBanner();
+  window.scrollTo(0, 0);
+});
+window.addEventListener('resize', () => {
+  if (!isMobileView()) { // 데스크톱 폭으로 돌아오면 원상복구
+    document.body.classList.remove('m-results');
+    hideResultsBanner();
+    document.getElementById('backExp').style.display = 'none';
+  }
 });
 const syncFs = () => document.body.classList.toggle('fs', !!(document.fullscreenElement || document.webkitFullscreenElement));
 document.addEventListener('fullscreenchange', syncFs);
